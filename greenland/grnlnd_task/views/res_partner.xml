@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_grnland_from" model="ir.ui.view">
+                <field name="name">view_partner_form.inherit</field>
+                <field name="model">res.partner</field>
+                <field name="inherit_id" ref="base.view_partner_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//sheet/notebook" position="before">
+                        <group>
+                            <field name="parent_id"/>
+                        </group>
+                    </xpath>
+                    <xpath expr="//page[@name='internal_notes']" position="after">
+                        <page name="customer_docs" string="Documents Detail">
+                            <field name="grn_document_ids">
+                                <tree string="Services Line" editable="bottom" limit="200">
+                                    <field name="name" required="1"/>
+                                    <field name="expiry_date" attrs="{'style': 'color: red;'}" options="{'widget': 'date'}" required="1"/>
+                                    <field name="state" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </xpath>
+                    <xpath expr="//field[@id='company']" position="after">
+                        <field id="company_ar" dir="rtl" style="text-align: right;" options="{'line_breaks': False}" widget="text" class="text-break" name="name_ar" default_focus="1" placeholder="مثال: شركة الخشب" invisible="not is_company" required="type == 'contact'"/>
+                    </xpath>
+                    <xpath expr="//field[@name='category_id']" position="after">
+                        <field name="contact_name" placeholder="e.g. John Smith" />
+                        <field name="contact_position" placeholder="e.g. General Manager" />
+                    </xpath>
+                    <xpath expr="//field[@name='website']" position="after">
+                        <field name="customer_id" readonly="not id or customer_id" force_save="1"/>
+                    </xpath>
+                    <xpath expr="//div[@class='o_address_format']" position="after">
+                            <span class="o_form_label o_td_label" name="address_name_ar">
+                                <field name="type" invisible="is_company" readonly="user_ids" required="not is_company" class="fw-bold"/>
+                                <b invisible="not is_company">Address (Arabic)</b>
+                            </span>
+                            <div class="o_address_format_ar" dir="rtl" style="text-align: right;">
+                                <div class="d-flex justify-content-between">
+                                    <field name="street_ar" placeholder="اسم الشارع" class="o_address_street_ar" readonly="type == 'contact' and parent_id" style="margin-bottom: 5px;"/>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <field name="city_ar" placeholder="المدينة" class="o_address_city_ar" readonly="type == 'contact' and parent_id" style="margin-bottom: 5px;"/>
+                                    <field name="state_ar" placeholder="الحي" class="o_address_state_ar" readonly="type == 'contact' and parent_id" style="margin-bottom: 5px;"/>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <field name="country_ar" placeholder="البلد" class="o_address_country_ar" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" readonly="type == 'contact' and parent_id" style="margin-bottom: 5px;"/>
+                                </div>
+                            </div>
+                    </xpath>
+                </field>
+            </record>
+
+    <record id="res_partner_act_window_email_composer_single" model="ir.actions.act_window">
+        <field name="name">Send Email</field>
+        <field name="res_model">mail.compose.message</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_model': 'res.partner',
+                                 'default_res_ids': [active_id],
+                                 'default_use_template': True,
+                                 'default_composition_mode': 'comment'}</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+    <record id="view_partner_bank_form_inherit_custom" model="ir.ui.view">
+            <field name="name">res.partner.bank.form.inherit.custom</field>
+            <field name="model">res.partner.bank</field>
+            <field name="inherit_id" ref="base.view_partner_bank_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Insert IBAN and Branch after Account Number -->
+                <xpath expr="//field[@name='acc_number']" position="after">
+                    <field name="iban"/>
+                    <field name="branch"/>
+                </xpath>
+
+            </field>
+        </record>
+</odoo>

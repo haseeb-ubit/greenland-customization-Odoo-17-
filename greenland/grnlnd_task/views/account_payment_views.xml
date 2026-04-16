@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account.action_account_payments" model="ir.actions.act_window">
+        <field name="context">{
+            'default_payment_type': 'inbound',
+            'default_partner_type': 'customer',
+            'search_default_inbound_filter': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+            'display_account_trust': True,
+            'payment_context': 'customer',
+        }</field>
+    </record>
+    <record id="account.action_account_payments_payable" model="ir.actions.act_window">
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'search_default_outbound_filter': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+            'display_account_trust': True,
+            'payment_context': 'vendor',
+        }</field>
+    </record>
+    <record id="view_account_payment_form_both_fields" model="ir.ui.view">
+        <field name="name">account.payment.form.both.fields</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <xpath expr="(//group[@name='group1']//field[@name='partner_id'])[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="(//group[@name='group1']//field[@name='partner_id'])[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='payment_type']" position="after">
+                <field name="partner_id" context="{'default_is_company': True}" string="Customer"
+                       options="{'no_quick_create': True}"
+                       domain="[('x_studio_contact_type', '=', 'Customer'), ('is_company', '=', True)]"
+                       invisible="context.get('payment_context') != 'customer' or is_internal_transfer"
+                       readonly="state != 'draft'"/>
+                       
+                <field name="partner_id" context="{'default_is_company': True}" string="Vendor"
+                       options="{'no_quick_create': True}"
+                       domain="[('x_studio_contact_type', '=', 'Vendor'), ('is_company', '=', True)]"
+                       invisible="context.get('payment_context') != 'vendor' or is_internal_transfer"
+                       readonly="state != 'draft'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

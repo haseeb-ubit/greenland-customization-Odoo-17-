@@ -1,0 +1,29 @@
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Driver Form View -->
+    <record id="driver_form_view" model="ir.ui.view">
+        <field name="name">driver.form</field>
+        <field name="model">driver</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Menu Action -->
+    <record id="action_driver" model="ir.actions.act_window">
+        <field name="name">Driver</field>
+        <field name="res_model">driver</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_driver"
+              name="Driver"
+              parent="sale.menu_sale_config"
+              action="action_driver"
+              sequence="30"/>
+</odoo> -->

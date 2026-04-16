@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_digital_service_ticket" model="ir.sequence">
+            <field name="name">Digital Service Ticket</field>
+            <field name="code">digital.service.ticket</field>
+            <field name="prefix">D-</field>
+            <field name="padding">6</field>
+            <field name="number_next">100000</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data noupdate="1">
+        <record id="seq_grnlnd_share_token" model="ir.sequence">
+            <field name="name">Greenland Share Token</field>
+            <field name="code">grnlnd_task.share.token</field>
+            <field name="padding">6</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">ST-</field>
+        </record>
+    </data>
+    <data noupdate="0">
+        <record id="seq_customer_id" model="ir.sequence">
+            <field name="name">Customer ID Sequence</field>
+            <field name="code">res.partner.customer.id</field>
+            <field name="prefix">%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data noupdate="0">
+        <record id="seq_employee_id" model="ir.sequence">
+            <field name="name">Employee ID Sequence</field>
+            <field name="code">hr.employee.identification</field>
+            <field name="prefix">GES-</field>
+            <field name="padding">4</field>
+            <field name="number_next">150</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

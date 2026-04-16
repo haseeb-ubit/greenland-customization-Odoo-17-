@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Customer Signature Wizard Form -->
+    <record id="view_customer_signature_wizard_form" model="ir.ui.view">
+        <field name="name">customer.signature.wizard.form</field>
+        <field name="model">customer.signature.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Collect Customer Signature">
+                <group>
+                    <field name="contract_customer_id" readonly="1"/>
+                    <!-- <field name="use_existing"/> -->
+                    <!-- <field name="existing_signature_id" invisible="not use_existing" options="{'no_create': True}"/> -->
+                    <field name="receiver_name" required="1"/>
+                    <field name="receiver_position"/>
+                    <field name="signature" widget="signature" options="{'load': False}"/>
+                </group>
+                <footer>
+                    <button name="action_save_signature" string="Save Signature" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Project Task Preview Form (for fallback) -->
+    <record id="project_task_preview_form_view" model="ir.ui.view">
+        <field name="name">project.task.preview.form</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <form string="Job Details Preview">
+                <group>
+                    <field name="company_id" invisible="1"/>
+                    <field name="name" string="Task Name"/>
+                    <field name="service_ticket_number"/>
+                    <field name="driver_id"/>
+                    <field name="contract_customer_id" string="Customer"/>
+                    <field name="contract_type"/>
+                    <field name="state"/>
+                    <field name="signature_image" widget="image" readonly="1"/>
+                </group>
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

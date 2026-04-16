@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Share button next to Preview on project.task form (digital tickets) -->
+    <record id="view_task_form_inherit_share_button" model="ir.ui.view">
+        <field name="name">project.task.form.share.button</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <button name="action_generate_share_link"
+                        type="object"
+                        class="btn btn-secondary"
+                        string="Share"
+                       invisible ="ticket_type != 'digital'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="portal_expense_home" name="Show Invoices &amp; Bills" inherit_id="portal.portal_my_home" customize_show="True" priority="30">
+		<xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+			<t t-set="portal_client_category_enable" t-value="True"/>
+			<t t-set="portal_vendor_category_enable" t-value="True"/>
+			<div id="portal_expense" position="inside">
+				<t t-call="portal.portal_docs_entry">
+					<t t-set="icon" t-value="'/account/static/src/img/Bill.svg'"/>
+					<t t-set="title">Expense</t>
+					<t t-set="url" t-value="'/all_expense'"/>
+					<t t-set="text">Create and Manage your Expense</t>
+					<t t-set="placeholder_count" t-value="'invoice_count'"/></t>
+			</div>
+		</xpath>
+	</template>
+	<template id="expense_data" name="hr_expense_data">
+		<t t-call="portal.portal_layout">
+			<t t-set="breadcrumbs_searchbar" t-value="True"/>
+			<t t-call="portal.portal_searchbar">
+				<xpath expr="//t[@t-call='portal.portal_searchbar']//t[1]" position="after">
+					<div class="form-inline ml-lg-4 js_create_expense_record">
+						<a id="create_expense_record" class="btn btn-success" role="button">
+                            Create
+                        </a>
+					</div>
+				</xpath>
+				<xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+					<div id="create_box" class="modal fade js_create_expense_record" role="dialog">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">Create Expense</h4>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="from_date">
+												<b>Expense Date</b>
+											</label>
+											<input type="date" class="form-control" id="from_date" name="from_date"/>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="name">
+												<b>Name</b>
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" class="form-control" id="name" name="name"/>
+										</div>
+										<div class="col-1"></div>
+									</div>
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="category">
+												<b>Category</b>
+											</label>
+											<select id="category" class="form-control">
+												<t t-foreach="request.env['product.product'].sudo().search([('can_be_expensed', '=', 1)])" t-as="product_id">
+													<option t-att-value="product_id.id">
+														<t t-esc="product_id.name"/>
+													</option>
+												</t>
+											</select>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="total_expense">
+												<b>Total Amount</b>
+												<span class="text-danger">*</span>
+											</label>
+											<input type="number" class="form-control" id="total_expense" name="total_expense" placeholder="$10.00"/>
+										</div>
+										<div class="col-1"></div>
+									</div>
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="vendor_id">
+												<b>Vendor</b>
+											</label>
+											<select id="vendor_id" class="form-control">
+												<option value="">Select Vendor</option>
+												<t t-foreach="request.env['res.partner'].sudo().search([])" t-as="vendor">
+													<option t-att-value="vendor.id">
+														<t t-esc="vendor.name"/>
+													</option>
+												</t>
+											</select>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="vat_number">
+												<b>VAT Number</b>
+											</label>
+											<input type="text" class="form-control" id="vat_number" name="vat_number"/>
+										</div>
+										<div class="col-1"></div>
+									</div>
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="invoice_reference">
+												<b>Invoice/Bill #</b>
+											</label>
+											<input type="text" class="form-control" id="invoice_reference" name="invoice_reference" placeholder="e.g., INV-2025-001"/>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4">
+												<b>Paid By</b>
+											</label>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="paid_by" id="paid_by_emp" value="own_account"/>
+												<label >
+                                                    Employee
+                                                </label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="paid_by" id="paid_by_com" value="company_account"/>
+												<label >
+                                                    Company
+                                                </label>
+											</div>
+										</div>
+										<div class="col-5">
+                                            <label class="col-form-label col-md-4" for="total_expense">
+												<b>Attachment:     </b>
+											</label>
+                                            <input type="file" name="attachment" id="attachment" class="file o_input_file" 
+                                                    style="opacity: 0; position: absolute; width: 0; height: 0;" 
+                                                    data-show-upload="true" data-show-caption="true" 
+                                                    data-show-preview="true"/>
+                                            <label for="attachment" style="cursor: pointer;">
+                                                <span style="font-size: 24px;">📎</span>
+                                                <!-- This is a paperclip symbol -->
+                                            </label>
+                                        
+                                        </div>
+										<div class="col-1"></div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button id="createrecordset" class="btn btn-primary" name="create_time_off">Create</button>
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</xpath>
+				<xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+					<div id="edit_box" class="modal fade js_edit_expense_record" role="dialog">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">Edit Expense</h4>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="from_date">
+												<b>Expense Date</b>
+											</label>
+											<input type="date" class="form-control" id="edit_from_date" name="from_date" required=""/>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="name">
+												<b>Name</b>
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" class="form-control" id="edit_name_id" name="edit_name_id" required=""/>
+										</div>
+										<div class="col-1"></div>
+									</div>
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="category">
+												<b>Category</b>
+											</label>
+											<select id="edit_product_id" class="form-control">
+												<t t-foreach="request.env['product.product'].sudo().search([('detailed_type', '=', 'service'), ('can_be_expensed', '=', 1)])" t-as="product_id">
+													<option t-att-value="product_id.id">
+														<t t-esc="product_id.name"/>
+													</option>
+												</t>
+											</select>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="total_expense">
+												<b>Total Amount</b>
+												<span class="text-danger">*</span>
+											</label>
+											<input type="number" class="form-control" id="edit_total_id" name="total_expense" placeholder="$10.00" required=""/>
+										</div>
+										<div class="col-1"></div>
+									</div>
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="edit_vendor_id">
+												<b>Vendor</b>
+											</label>
+											<select id="edit_vendor_id" class="form-control">
+												<option value="">Select Vendor</option>
+												<t t-foreach="request.env['res.partner'].sudo().search([])" t-as="vendor">
+													<option t-att-value="vendor.id">
+														<t t-esc="vendor.name"/>
+													</option>
+												</t>
+											</select>
+										</div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4" for="edit_vat_number">
+												<b>VAT Number</b>
+											</label>
+											<input type="text" class="form-control" id="edit_vat_number" name="edit_vat_number" readonly="readonly"/>
+										</div>
+										<div class="col-1"></div>
+									</div>
+									<div class="row">
+										<div class="col-1"></div>
+										<div class="col-5">
+											<label class="col-form-label col-md-4">
+												<b>Paid By</b>
+											</label>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="paid_by" id="edit_from_emp" value="own_account" checked="checked"/>
+												<label >
+                                                    Employee
+                                                </label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="paid_by" id="edit_from_com" value="company_account" checked="checked" />
+												<label >
+                                                    Company
+                                                </label>
+											</div>
+										</div>
+										<div class="col-5">
+                                            <label class="col-form-label col-md-4" for="total_expense">
+												<b>Attachment:     </b>
+											</label>
+                                            <input type="file" name="attachment" id="attachment" class="file o_input_file" 
+                                                    style="opacity: 0; position: absolute; width: 0; height: 0;" 
+                                                    data-show-upload="true" data-show-caption="true" 
+                                                    data-show-preview="true"/>
+                                            <label for="attachment" style="cursor: pointer;">
+                                                <span style="font-size: 24px;">📎</span>
+                                                <!-- This is a paperclip symbol -->
+                                            </label>
+										</div>
+										<div class="col-1"></div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<input type="hidden" id="save_button_id" name="save_button_id" t-att-value=""/>
+									<button id="save_expense_record" class="btn btn-primary" name="save_expense_record">Save</button>
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</xpath>
+				<xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+					<div id="delete_dialog" class="modal fade js_cls_del" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">Delete</h4>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+								</div>
+								<div class="modal-body">
+									<div class="col-md-12">
+										<h5>Are you want to delete ?</h5>
+									</div>
+									<input type="hidden" class="form-control o_website_form_input" id="delete_expense_id" name="delete_expense_id" value="delete_expense_id"/>
+									<div class="modal-footer">
+										<button id="delete_ids" class="btn btn-primary" name="delete_ids">OK</button>
+										<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</xpath>
+			</t>
+			<html>
+				<body>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Expense Date</th>
+								<th >Category</th>
+								<th>Vendor</th>
+								<th>VAT Number</th>
+								<th>Employee</th>
+								<th >Paid By</th>
+								<th class="text-end">Total</th>
+								<th>Status</th>
+								<th>Operation</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-foreach="data" t-as="data">
+								<t t-if="data.employee_id.id == request.env.user.employee_id.id">
+									<tr>
+										<td>
+											<t t-esc="data.name"/>
+										</td>
+										<td>
+											<t t-esc="data.date"/>
+										</td>
+										<td>
+											<t t-esc="data.product_id.name"/>
+										</td>
+										<td>
+											<t t-esc="data.vendor_id.name if data.vendor_id else ''"/>
+										</td>
+										<td>
+											<t t-esc="data.vat_number or ''"/>
+										</td>
+										<td>
+											<t t-esc="data.employee_id.name"/>
+										</td>
+										<td>
+											<t t-if="data.payment_mode == 'company_account'">
+                                                Company
+                                            </t>
+											<t t-if="data.payment_mode == 'own_account'">
+                                                Employee
+                                            </t>
+										</td>
+										<td class="text-end">
+											<t t-esc="data.total_amount_currency"/>
+										</td>
+										<td>
+											<t t-esc="data.state"/>
+										</td>
+										<td>
+											<t t-if="data.state == 'draft'">
+												<div class="form-inline ml-lg-4 js_edit_expense_record">
+													<input type="hidden" id="edit_button_id" name="edit_button_id" t-att-value="data.id"/>
+													<a id="edit_expense_record" class="btn btn-success btn-sm" role="button" >Edit</a>
+													<input type="hidden" id="delete_id" name="delete_id"/>
+													<a id="delete_expense_record" class="btn btn-danger btn-sm" role="button" >Delete</a>
+												</div>
+											</t>
+										</td>
+									</tr>
+								</t>
+							</t>
+						</tbody>
+					</table>
+				</body>
+			</html>
+		</t>
+	</template>
+</odoo>

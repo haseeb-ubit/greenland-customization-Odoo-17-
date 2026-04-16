@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vehicle Form View -->
+    <record id="vehicle_form_view" model="ir.ui.view">
+        <field name="name">vehicle.form</field>
+        <field name="model">vehicle</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Menu Action -->
+    <record id="action_vehicle" model="ir.actions.act_window">
+        <field name="name">Vehicle</field>
+        <field name="res_model">vehicle</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_vehicle"
+              name="Vehicle"
+              parent="sale.menu_sale_config"
+              action="action_vehicle"
+              sequence="30"/>
+</odoo>

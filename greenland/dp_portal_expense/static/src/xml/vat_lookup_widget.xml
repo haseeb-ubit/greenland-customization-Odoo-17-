@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="dp_portal_expense.VatLookupField">
+        <div class="o_field_char position-relative">
+            <input
+                class="o_input w-100"
+                type="text"
+                t-att-id="props.id"
+                t-att-placeholder="props.placeholder"
+                t-att-value="state.inputValue"
+                t-att-readonly="props.readonly"
+                t-on-input="onInput"
+                t-on-change="onChange"
+                t-on-keydown="onKeyDown"
+                t-on-blur="onBlur"
+                autocomplete="off"
+            />
+            
+            <!-- Loading -->
+            <span t-if="state.loading" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%);">
+                <i class="fa fa-spinner fa-spin"></i>
+            </span>
+            
+            <!-- Dropdown - Odoo default style -->
+            <ul t-if="state.showDropdown and state.suggestions.length > 0"
+                class="o-autocomplete--dropdown-menu ui-autocomplete ui-menu ui-widget ui-widget-content show d-block position-absolute w-100"
+                style="top: 100%; left: 0; z-index: 1050; max-height: 300px; overflow-y: auto;">
+                
+                <t t-foreach="state.suggestions" t-as="vendor" t-key="vendor.id">
+                    <li t-attf-class="o-autocomplete--dropdown-item ui-menu-item {{ state.selectedIndex === vendor_index ? 'ui-state-active' : '' }}"
+                        t-on-click="() => this.selectVendor(vendor)">
+                        <a class="dropdown-item ui-menu-item-wrapper d-block px-3 py-2" href="#">
+                            <span class="fw-normal"><t t-esc="vendor.name"/></span>
+                            <br/>
+                            <small class="text-muted">VAT: <t t-esc="vendor.vat"/></small>
+                        </a>
+                    </li>
+                </t>
+            </ul>
+        </div>
+    </t>
+
+</templates>

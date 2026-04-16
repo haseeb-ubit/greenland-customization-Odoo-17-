@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+        <record id="action_service_summary_report" model="ir.actions.report">
+            <field name="name">Service Summary Report</field>
+            <field name="model">account.move</field>
+            <!--  Model triggering the report  -->
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">grnlnd_task.report_service_summary</field>
+            <field name="report_file">grnlnd_task.report_service_summary</field>
+            <field name="print_report_name">'%s - %s' % (object.partner_id.ref or object.partner_id.name, (object.name or '').replace('/', '∕'))</field>
+            <field name="attachment"/>
+            <field name="binding_model_id" eval="False"/>
+        </record>
+
+        <record id="action_service_summary_report_contract" model="ir.actions.report">
+            <field name="name">Service Summary Report</field>
+            <field name="model">subscription.contracts</field>
+            <!--  Model triggering the report  -->
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">grnlnd_task.report_service_summary_contract</field>
+            <field name="report_file">grnlnd_task.report_service_summary_contract</field>
+            <field name="print_report_name">"Service Summary Report"</field>
+            <field name="attachment"/>
+            <field name="binding_model_id" ref="sales_contract_and_recurring_invoices.model_subscription_contracts"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+        <!-- Template to add driver-specific CSS classes -->
+        <template id="driver_user_template" inherit_id="web.layout">
+            <xpath expr="//body" position="attributes">
+                <attribute name="t-att-class" add="'driver-user' if request.env.user.has_group('grnlnd_task.group_driver_access') else ''"/>
+                <attribute name="t-att-data-driver-user" add="'true' if request.env.user.has_group('grnlnd_task.group_driver_access') else 'false'"/>
+            </xpath>
+        </template>
+        
+<!--
+        <template id="listing">
+          <ul>
+            <li t-foreach="objects" t-as="object">
+              <a t-attf-href="#{ root }/objects/#{ object.id }">
+                <t t-esc="object.display_name"/>
+              </a>
+            </li>
+          </ul>
+        </template>
+        <template id="object">
+          <h1><t t-esc="object.display_name"/></h1>
+          <dl>
+            <t t-foreach="object._fields" t-as="field">
+              <dt><t t-esc="field"/></dt>
+              <dd><t t-esc="object[field]"/></dd>
+            </t>
+          </dl>
+        </template>
+-->
+    </data>
+</odoo>

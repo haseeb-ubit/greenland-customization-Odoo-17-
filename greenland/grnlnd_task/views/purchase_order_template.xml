@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_report_purchase_order_with_comments" model="ir.actions.report">
+            <field name="name">Purchase Order with Comments</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">grnlnd_task.report_po_custom_with_comments</field>
+            <field name="report_file">grnlnd_task.report_po_custom_with_comments</field>
+
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_type">report</field>
+        </record>
+        <record id="view_purchase_order_tree_inherit_report" model="ir.ui.view">
+    <field name="name">purchase.order.tree.inherit.report</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+    <field name="arch" type="xml">
+        <xpath expr="//tree" position="inside">
+            <header>
+                <button name="action_print_purchase_reports"
+                        string="Report"
+                        type="object"
+                        class="oe_highlight"/>
+            </header>
+        </xpath>
+    </field>
+</record>
+
+
+
+        <record id="view_purchase_order_form_inherit_comments" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.comments</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_approve']" position="after">
+                    <group>
+                        <field name="comments" string="Comments" placeholder="Enter comments here..."/>
+                        <field name="comment_date" string="Comment Date"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <template id="custom_purchase_order_template" inherit_id="purchase.report_purchaseorder_document">
+            </template>
+
+        <template id="report_po_custom_with_comments">
+            </template>
+
+    </data>
+</odoo>

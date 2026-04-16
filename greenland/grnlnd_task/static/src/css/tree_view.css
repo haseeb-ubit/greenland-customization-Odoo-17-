@@ -1,0 +1,45 @@
+.o_list_view td {
+    white-space: pre-wrap !important;
+}
+
+.o_list_view th {
+    padding-right: 20px;
+}
+
+/* Alternative: Hide all many2one external buttons with specific class */
+.o_field_many2one_no_open .o_external_button {
+    display: none !important;
+}
+
+.o_field_many2one_no_open.o_readonly {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+.o_field_driver_locked {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+.o_driver_readonly_force {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+.o_web_sign_load_button {
+    display: none !important;
+}
+
+.o_field_project_task_state_selection {
+    display: none !important;
+}
+
+/* Hide search bar only for driver users */
+body.driver-user .o_cp_searchview.d-flex.input-group {
+    display: none !important;
+}
+
+/* Alternative approach: Hide search bar for driver users using data attribute */
+[data-driver-user="true"] .o_cp_searchview.d-flex.input-group {
+    display: none !important;
+}

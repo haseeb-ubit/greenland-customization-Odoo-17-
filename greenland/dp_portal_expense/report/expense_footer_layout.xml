@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="expense_report_custom_layout_standard" inherit_id="web.external_layout_standard">
+
+        <xpath expr="//div[@t-attf-class='header o_company_#{company.id}_layout']" position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" style="padding: 0; margin: 0 0 -40px 0;">
+                <img src="/dp_portal_expense/static/src/img/header.png" style="max-height: 80px;" alt="Company Header"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@t-attf-class='footer o_standard_footer o_company_#{company.id}_layout']" position="replace">
+            <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout" style="min-height: 70px; padding-top: 5px;">
+                <t t-if="o._name == 'hr.expense.sheet'">
+                    <div style="font-size: 9pt; padding: 3px 0 0 0;">
+                        <div style="display: inline-block; width: 32%; vertical-align: top;">
+                            <strong>Submitted By:</strong> <span t-field="o.display_submitted_by.name"/><br/>
+                            <strong>Date Of Submission:</strong> <span t-if="o.display_submission_date" t-field="o.display_submission_date" t-options='{"widget": "date"}'/>
+                        </div>
+                        <div style="display: inline-block; width: 32%; vertical-align: top; text-align: center;">
+                            <strong>Approved By:</strong> <span t-field="o.display_approved_by.name"/><br/>
+                            <strong>Date Of Approval:</strong> <span t-if="o.display_approval_date" t-field="o.display_approval_date" t-options='{"widget": "date"}'/>
+                        </div>
+                        <div style="display: inline-block; width: 32%; vertical-align: top; text-align: right;">
+                            <strong>Paid By:</strong> <span t-field="o.display_paid_by.name"/><br/>
+                            <strong>Payment Date:</strong> <span t-if="o.display_payment_date" t-field="o.display_payment_date" t-options='{"widget": "date"}'/>
+                        </div>
+                    </div>
+                </t>
+                <div style="text-align: center; font-size: 8pt; padding: 1px 0 0 0;">
+                    <span class="page"/> of <span class="topage"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cron Job for Document Expiry Report -->
+    <record id="cron_document_expiry_report" model="ir.cron">
+        <field name="name">Send Document Expiry Report</field>
+        <field name="model_id" ref="model_document_expiry_cron"/>
+        <field name="state">code</field>
+        <field name="code">model.send_document_expiry_report()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="priority">5</field>
+    </record>
+
+    <!-- Email Template Reference (to be created from frontend) -->
+    <!-- This is just a placeholder record - you'll create the actual template from frontend -->
+    <record id="email_template_document_expiry_report" model="mail.template">
+        <field name="name">Document Expiry Report Template</field>
+        <field name="model_id" ref="model_document_expiry_cron"/>
+        <field name="subject">Document Expiry Report - {start_date} to {end_date}</field>
+        <field name="body_html"><![CDATA[
+            <p>Dear Team,</p>
+            <p>Please find attached the automated Document Expiry Report.</p>
+            <p><strong>Report Details:</strong></p>
+            <ul>
+                <li>Period: {start_date} to {end_date}</li>
+                <li>Total Documents: {document_count}</li>
+                <li>Generated: {report_generated_date}</li>
+            </ul>
+            <p>This report includes all documents that are either expired or coming up for renewal in the next 30 days.</p>
+            <p>Please review and take necessary action for document renewals.</p>
+            <br/>
+            <p>Best regards,<br/>System Administrator</p>
+        ]]></field>
+        <field name="email_from">${(object.env.company.email or 'noreply@company.com')}</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

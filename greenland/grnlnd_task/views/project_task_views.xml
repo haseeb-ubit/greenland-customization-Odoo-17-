@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit subscription contract form view to add the button -->
+    <record id="view_subscription_contracts_form_inherit" model="ir.ui.view">
+        <field name="name">subscription.contracts.view.form.inherit</field>
+        <field name="model">subscription.contracts</field>
+        <field name="inherit_id" ref="sales_contract_and_recurring_invoices.subscription_contracts_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_service_summary" class="oe_highlight"
+                        string="Generate Service Summary Report" type="object"
+                        help="Generate Service Summary Report for this Contract"
+                        invisible="state not in ('Ongoing', 'Expire Soon')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Container Form View -->
+    <record id="container_form_view" model="ir.ui.view">
+        <field name="name">container.form</field>
+        <field name="model">container</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Menu Action -->
+    <record id="action_container" model="ir.actions.act_window">
+        <field name="name">Container</field>
+        <field name="res_model">container</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_container"
+              name="Container"
+              parent="sale.menu_sale_config"
+              action="action_container"
+              sequence="35"/>
+</odoo> 

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_move_grnland_from" model="ir.ui.view">
+                <field name="name">account.move.greenland.inherit</field>
+                <field name="model">account.move</field>
+                <field name="inherit_id" ref="account.view_move_form"/>
+                <field name="arch" type="xml">
+                    <!-- Add grouping fields (invisible) -->
+                    <xpath expr="//field[@name='move_type']" position="after">
+                        <field name="group_id" invisible="1"/>
+                        <field name="sequence_in_group" invisible="1"/>
+                    </xpath>
+                    
+                    <!-- Add smart button for viewing group -->
+                    <xpath expr="//div[@name='button_box']" position="inside">
+                        <button name="action_view_group" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-object-group"
+                                invisible="not group_id or move_type != 'entry'">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Group</span>
+                            </div>
+                        </button>
+                    </xpath>
+                    
+                    <!-- Add "Create Entry Below" button in header for journal entries -->
+                    <xpath expr="//header/button[@name='action_post']" position="after">
+                        <button name="action_create_entry_below" 
+                                string="Create Entry Below" 
+                                type="object" 
+                                class="btn-secondary"
+                                invisible="move_type != 'entry'"
+                                help="Create a new journal entry below this one for the same employee"/>
+                    </xpath>
+                    
+                    <!-- Add "Create Group" button for ungrouped entries -->
+                    <xpath expr="//header/button[@name='action_post']" position="after">
+                        <button name="action_create_group" 
+                                string="Create Group" 
+                                type="object" 
+                                class="btn-secondary"
+                                invisible="group_id or move_type != 'entry' or not partner_id"
+                                help="Create a group for this entry"/>
+                    </xpath>
+                    
+                    <xpath expr="//field[@name='invoice_date']" position="after">
+                        <field name="customer_po" invisible="move_type not in ('out_invoice', 'out_refund', 'out_receipt')"/>
+                    </xpath>
+                    
+                    <!-- Add partner field for journal entries (for grouping) -->
+                    <xpath expr="//field[@name='ref']" position="after">
+                        <field name="partner_id" 
+                               string="Partner/Employee"
+                               invisible="move_type != 'entry'"
+                               readonly="state != 'draft'"/>
+                               placeholder="Select partner for grouping..."
+                               options='{"no_create": True}'/>
+                    </xpath>
+                    
+                    <xpath expr="//field[@name='partner_id']" position="replace">
+                        <field name="partner_id" widget="res_partner_many2one" nolabel="1"
+                                           context="{
+                                            'res_partner_search_mode': (context.get('default_move_type', 'entry') in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (context.get('default_move_type', 'entry') in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False,
+                                            'show_address': 1, 'default_is_company': True, 'show_vat': True}"
+                                           domain="[('company_id', 'in', (False, company_id)),('is_company', '=', True)]"
+                                           options='{"no_quick_create": True}'
+                                           invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"
+                                           readonly="state != 'draft'"/>
+                    </xpath> 
+                    <xpath expr="//group[@id='header_left_group']" position="inside">
+                        <field name="show_product_name_ar" position="after">
+                            <label for="show_product_name_ar" string="Show Product Arabic Name"/>
+                            <field name="show_product_name_ar"/>
+                        </field>
+                    </xpath>
+                    <xpath expr="//field[@name='invoice_date']" position="after">
+                        <field name="is_error_invoice" 
+                               invisible="move_type not in ('out_refund', 'in_refund')"/>
+                    </xpath>
+                    <xpath expr="//button[@name='preview_invoice']" position="replace">
+                        <button name="preview_invoice" type="object" string="Preview" data-hotkey="o"
+                                title="Preview invoice"
+                                invisible="move_type not in ('out_invoice', 'out_refund')"/>
+                    </xpath>
+                    <xpath expr="//tree/field[@name='name']" position="after">
+                        <field name="location" widget="many2one"/>
+                    </xpath>
+                </field>
+    </record>
+</odoo>

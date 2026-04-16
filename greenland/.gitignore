@@ -1,0 +1,53 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directories
+venv/
+ENV/
+env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE or editor folders (common ones)
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Dependency directories
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Python distribution folders
+build/
+dist/
+*.egg-info/
+
+# pytest and coverage files
+.cache
+.coverage
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# PyCharm specific files
+.idea/
+
+# MyPy, Pylint and other linters
+.mypy_cache/
+.pylint.d/
+
+# dotenv files
+.env
+*.env

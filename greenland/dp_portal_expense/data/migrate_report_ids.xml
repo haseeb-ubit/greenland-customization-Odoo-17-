@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Migration: Convert old 'New' report_reference values to empty -->
+    <function model="hr.expense.sheet" name="_migrate_new_report_references"/>
+</odoo>

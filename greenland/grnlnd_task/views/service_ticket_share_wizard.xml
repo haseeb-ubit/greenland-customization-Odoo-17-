@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_service_ticket_share_wizard" model="ir.ui.view">
+        <field name="name">service.ticket.share.wizard.form</field>
+        <field name="model">service.ticket.share.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Share">
+                <group>
+                    <label for="link" string="Link" class="o_form_label"/>
+                    <div class="o_row">
+                        <field name="link" readonly="1" class="oe_inline"/>
+                        <button type="object" name="action_copy_link" string="Copy" class="btn btn-primary"/>
+                    </div>
+                </group>
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
+

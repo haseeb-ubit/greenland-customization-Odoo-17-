@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_service_ticket_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="header">
+                    <!-- Logo in header to avoid white space -->
+                    <div style="text-align: center; margin: 0; padding: 10px 0 5px 0;">
+                        <img src="/grnlnd_task/static/src/img/header.png"
+                             alt="Greenland Environmental Services"
+                             style="height: 100px; width: auto;"/>
+                    </div>
+                </div>
+
+                <div class="article">
+                    <style>
+                        * {
+                            font-family: 'Arial', sans-serif !important;
+                        }
+                        body {
+                            margin: 0;
+                            padding: 0px 20px 80px 20px;
+                        }
+                        .service-note-header {
+                            text-align: center;
+                            font-size: 23px;
+                            font-weight: bold;
+                            color: black;
+                            margin-bottom: 10px;
+                            margin-top: 0px;
+                        }
+                        .service-ticket-line {
+                            font-size: 18px;
+                            margin-bottom: 15px;
+                            text-align: left;
+                            font-weight: bold;
+                            color: red;
+                        }
+                        .service-details-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 15px;
+                            border: 2px solid black;
+                        }
+                        .service-details-table th,
+                        .service-details-table td {
+                            border: 1px solid black;
+                            padding: 8px;
+                            text-align: center;
+                            font-size: 14px;
+                        }
+                        .service-details-table th {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                        }
+                        .service-info-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 15px;
+                            border: 2px solid black;
+                        }
+                        .service-info-table th {
+                            border: 1px solid black;
+                            padding: 8px;
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                            text-align: center;
+                            font-size: 13px;
+                        }
+                        .service-info-table td {
+                            border: 1px solid black;
+                            padding: 8px;
+                            text-align: center;
+                            font-size: 13px;
+                        }
+                        .arabic-text {
+                            direction: rtl;
+                            text-align: right;
+                        }
+                        .client-details-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 15px;
+                        }
+                        .client-details-table th {
+                            border: 1px solid black;
+                            padding: 8px;
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                            text-align: left;
+                            font-size: 14px;
+                        }
+                        .client-details-table td {
+                            border: 1px solid black;
+                            padding: 8px;
+                            text-align: center;
+                            font-size: 14px;
+                        }
+                        .client-details-table .label-cell {
+                            font-weight: bold;
+                            width: 25%;
+                            text-align: left;
+                        }
+                        .client-details-name{
+                            font-weight: bold;
+                        }
+                        .client-details-table .arabic-label {
+                            text-align: right;
+                            width: 25%;
+                            font-weight: bold;
+                        }
+                    </style>
+
+                    <!-- Service Note Header -->
+                    <div class="service-note-header">
+                        Delivery Service Note
+                    </div>
+
+                    <!-- Service Ticket Number Line -->
+                    <div class="service-ticket-line">
+                        Service Ticket # <span t-field="doc.service_ticket_number"/>
+                    </div>
+
+                    <!-- Client Details -->
+                    <table class="client-details-table" style="border: 2px solid black;">
+                        <tr>
+                            <th colspan="3">Client Details</th>
+                        </tr>
+                        <tr>
+                            <td class="label-cell">Customer ID:</td>
+                            <td class="client-details-name"><span t-esc="doc.ref if doc.ref else '-'"/></td>
+                            <td class="arabic-label">:معرف العميل</td>
+                        </tr>
+                        <tr>
+                            <td class="label-cell">Client Name:</td>
+                            <td><span class="client-details-name" t-field="doc.contract_customer_id.name"/></td>
+                            <td class="arabic-label">:اسم العميل</td>
+                        </tr>
+                        <tr>
+                            <td class="label-cell">Location:</td>
+                            <td>
+                                <t t-if="doc.contract_service_ids">
+                                    <t t-set="locations" t-value="list([line.location.name for line in doc.contract_service_ids if line.location])"/>
+                                    <t t-if="locations">
+                                        <t t-esc="', '.join(locations)"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </t>
+                                <t t-else="">-</t>
+                            </td>
+                            <td class="arabic-label">:الموقع</td>
+                        </tr>
+                    </table>
+
+                    <!-- Service Ticket Info -->
+                    <table class="service-details-table">
+                        <tr>
+                            <th style="width: 25%;">Service Ticket Date /<br/>تاريخ الخدمة</th>
+                            <th>Driver Name /<br/>اسم السائق</th>
+                            <th style="width: 25%;">Vehicle Number /<br/>لوحة المركبة</th>
+                        </tr>
+                        <tr>
+                            <td><span t-field="doc.date_deadline" t-options="{'widget': 'date', 'format': 'dd-MMM-yy'}"/></td>
+                            <td><span t-field="doc.driver_id.name"/></td>
+                            <td><span t-field="doc.vehicle_number.name"/></td>
+                        </tr>
+                    </table>
+
+                    <!-- Service Lines -->
+                    <table class="service-info-table">
+                        <tr>
+                            <th style="width: 25%;">Service Code (SKU)<br/>رمز الخدمة</th>
+                            <th>Nature of Goods or Services<br/>طبيعة السلع أو الخدمات</th>
+                            <th style="width: 12%;">Qty<br/>الكمية</th>
+                            <th style="width: 13%;">Unit<br/>الوحدة</th>
+                        </tr>
+                        <t t-foreach="doc.contract_service_ids" t-as="service_line">
+                            <tr>
+                                <td><span t-field="service_line.name.default_code"/></td>
+                                <td><span t-field="service_line.name.name"/></td>
+                                <td><span t-esc="service_line.quantity"/></td>
+                                <td><span t-field="service_line.product_uom_id.name"/></td>
+                            </tr>
+                        </t>
+                    </table>
+
+                    <!-- Container Info -->
+                    <table class="service-details-table">
+                        <tr>
+                            <td style="font-weight: bold; text-align: left; width: 25%;">Container In:</td>
+                            <td style="text-align: center;"><t t-if="doc.container_in"><span t-field="doc.container_in.name"/></t><t t-else="">-</t></td>
+                            <td style="font-weight: bold; text-align: right; width: 25%;">:دخول حاوية</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: left; width: 25%;">Container Out:</td>
+                            <td style="text-align: center;"><t t-if="doc.container_out"><span t-field="doc.container_out.name"/></t><t t-else="">-</t></td>
+                            <td style="font-weight: bold; text-align: right; width: 25%;">:خروج حاوية</td>
+                        </tr>
+                    </table>
+
+                    <!-- Client Signature -->
+                    <table class="service-details-table">
+                        <tr><th colspan="3">Client Signature</th></tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: left; width: 25%;">Receiver Name:</td>
+                            <td style="text-align: center;"><t t-if="doc.signature_id and doc.signature_id.receiver_name"><span t-field="doc.signature_id.receiver_name"/></t><t t-else="">-</t></td>
+                            <td style="font-weight: bold; text-align: right; width: 25%;">:اسم المستلم</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: left; width: 25%;">Receiver Position:</td>
+                            <td style="text-align: center;"><t t-if="doc.signature_id and doc.signature_id.receiver_position"><span t-field="doc.signature_id.receiver_position"/></t><t t-else="">-</t></td>
+                            <td style="font-weight: bold; text-align: right; width: 25%;">:منصب المستلم</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: left; width: 25%;">Authorized Signature:</td>
+                            <td style="text-align: center;"><t t-if="doc.signature_image"><img t-att-src="image_data_uri(doc.signature_image)" style="max-height: 120px; max-width: 300px;"/></t></td>
+                            <td style="font-weight: bold; text-align: right; width: 25%;">:التوقيع المعتمد</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: left; width: 25%;">Signature Date:</td>
+                            <td style="text-align: center;"><span t-field="doc.date_deadline" t-options="{'widget': 'date', 'format': 'dd-MMM-yy'}"/></td>
+                            <td style="font-weight: bold; text-align: right; width: 25%;">:تاريخ التوقيع</td>
+                        </tr>
+                    </table>
+
+                    <!-- Footer -->
+                    <!-- Footer -->
+                    <div class="footer" style="padding-top: 60px;">
+                        <div class="footer-content" style="text-align: center;">
+                            <img src="/grnlnd_task/static/src/img/footer_icon.png" alt="Leaf Icon" style="height: 80px; width: auto; vertical-align: middle;"/>
+                            <span class="footer-text" style="line-height: 1.4; display: inline-block; vertical-align: middle;">
+                                Your Greenland Digital Service Note helps cut paper waste and shrink our carbon footprint.<br/>
+                                Thank you for supporting environmental sustainability.
+                            </span>
+                            <img src="/grnlnd_task/static/src/img/footer_icon.png" alt="Leaf Icon" style="height: 80px; width: auto; vertical-align: middle;"/>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page break after each ticket -->
+                <div style="page-break-after: always;"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report Action (unchanged) -->
+    <record id="action_report_service_ticket" model="ir.actions.report">
+        <field name="name">Service Ticket Preview</field>
+        <field name="model">project.task</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">grnlnd_task.report_service_ticket_template</field>
+        <field name="report_file">grnlnd_task.report_service_ticket_template</field>
+        <field name="print_report_name">
+            (object.ref and ('%s - %s' % (object.ref, object.service_ticket_number or object.name)) or ('- %s' % (object.service_ticket_number or object.name)))
+        </field>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

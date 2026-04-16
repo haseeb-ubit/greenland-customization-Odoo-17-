@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--    <record id="paperformat_expense_report" model="report.paperformat">-->
+<!--        <field name="name">Expense Report Paper Format</field>-->
+<!--        <field name="default" eval="False"/>-->
+<!--        <field name="format">A4</field>-->
+<!--        <field name="page_height">0</field>-->
+<!--        <field name="page_width">0</field>-->
+<!--        <field name="orientation">Portrait</field>-->
+<!--        <field name="margin_top">55</field>-->
+<!--        <field name="margin_bottom">25</field>-->
+<!--        <field name="margin_left">7</field>-->
+<!--        <field name="margin_right">7</field>-->
+<!--        <field name="header_line" eval="False"/>-->
+<!--        <field name="header_spacing">50</field>-->
+<!--        <field name="dpi">90</field>-->
+<!--    </record>-->
+
+    <record id="paperformat_expense_report_landscape" model="report.paperformat">
+        <field name="name">Expense Report Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">30</field>  <!-- TOP PAGE MARGIN - CONTROLS WHITE SPACE AT TOP -->
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">20</field>  <!-- CONTROLS TOTAL VERTICAL SPACE FOR HEADER -->
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Force recreation by changing ID -->
+    <record id="action_report_petty_cash_expense_sheet_v2" model="ir.actions.report">
+        <field name="name">Petty Cash Expense Summary</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dp_portal_expense.report_petty_cash_expense_sheet_summary</field>
+        <field name="report_file">dp_portal_expense.report_petty_cash_expense_sheet_summary</field>
+        <field name="print_report_name">'Petty Cash Summary - %s - %s' % (object.employee_id.name, (object.name).replace('/', ''))</field>
+        <field name="binding_model_id" eval="False"/>  <!-- Disable auto-binding, use button only -->
+        <field name="paperformat_id" ref="paperformat_expense_report_landscape"/>
+    </record>
+
+
+    <record id="hr_expense.action_report_hr_expense_sheet" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <record id="action_report_petty_cash_with_invoices" model="ir.actions.report">
+        <field name="name">Expense Report with Invoices</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dp_portal_expense.report_petty_cash_with_invoices</field>
+        <field name="report_file">dp_portal_expense.report_petty_cash_with_invoices</field>
+        <field name="print_report_name">'Petty Cash Expenses - %s - %s' % (object.employee_id.name, (object.name).replace('/', ''))</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_expense_report_landscape"/>
+    </record>
+
+    <record id="action_report_petty_cash_attachment_img" model="ir.actions.report">
+        <field name="name">Petty Cash Attachment Image</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dp_portal_expense.report_petty_cash_attachment_img</field>
+        <field name="report_file">dp_portal_expense.report_petty_cash_attachment_img</field>
+    </record>
+</odoo>

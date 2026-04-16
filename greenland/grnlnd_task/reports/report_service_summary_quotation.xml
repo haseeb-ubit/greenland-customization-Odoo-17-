@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_service_summary_quotation">
+        <t t-call="web.basic_layout">
+            <t t-call="grnlnd_task.custom_header_template"/>
+
+            <div style='margin-top:60px; margin-left:2px;' class="page">
+                <h3>Service Summary Report</h3>
+                <p>
+                    <strong>Quotation: </strong> <t t-esc="doc.name"/>
+                    <br/>
+                    <strong>From: </strong> <t t-esc="start_date"/>
+                    <br/>
+                    <strong>To: </strong> <t t-esc="end_date"/>
+                    <br/>
+                    <strong>Client: </strong> <t t-esc="doc.partner_id.name"/>
+                </p>
+                <table class="table table-condensed" style="width:100%; margin-top:50px;">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Location</th>
+                            <th>Quantity</th>
+                            <th>Driver</th>
+                            <th>Vehicle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="services" t-as="service">
+                            <tr>
+                                <td><t t-esc="service['service_name']"/></td>
+                                <td><t t-esc="service['location']"/></td>
+                                <td><t t-esc="'{:.2f}'.format(float(service['qty']))"/></td>
+                                <td><t t-esc="service['driver_name']"/></td>
+                                <td><t t-esc="service['vehicle_number']"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <br/><br/>
+            <div style="width: 100%; text-align: left; margin-top: 10px; font-family: 'Montserrat'; font-size: 16px; font-weight: 500;">
+                Client Signature: __________________________
+            </div>
+
+            <t t-call="grnlnd_task.custom_footer_template1"/>
+        </t>
+    </template>
+</odoo>

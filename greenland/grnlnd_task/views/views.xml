@@ -1,0 +1,743 @@
+<odoo>
+     <data>
+        <record id="view_granland_task_inherit_form" model="ir.ui.view">
+            <field name="name">project.task.view.inherited</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="priority">30</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="is_todo_task" invisible="1"/>
+                    <!-- Only for system users: visible and editable -->
+                    <field name="ticket_type" widget="radio" groups="base.group_system" invisible="service_ticket_number"/>
+                    <!-- For all other users: invisible -->
+                    <field name="ticket_type" widget="radio" invisible="1" groups="!base.group_system"/>
+                </xpath>
+
+                <!-- REPLACE THE ORIGINAL STATE FIELD WITH DRIVER-SPECIFIC CONTROLS -->
+                <xpath expr="//field[@name='state']" position="replace">
+                    <!-- FOR DRIVERS: Use driver_status field (hardcoded with only 2 options) -->
+                    <field name="driver_status"
+                           widget="statusbar"
+                           readonly="state == '1_done'"
+                           groups="grnlnd_task.group_driver_access"/>
+
+                    <!-- FOR ADMINS: Use regular state field (all options) -->
+                    <field name="state"
+                           widget="statusbar"
+                           groups="!grnlnd_task.group_driver_access"/>
+                </xpath>
+
+                <!-- ADD HEADER WITH BUTTONS -->
+                <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <button name="action_view_invoice"
+                                class="oe_highlight"
+                                string="View Invoice"
+                                type="object"
+                                help="View Invoice for the Service Ticket"
+                                invisible="state != '05_invoiced' or invoice_state != 'posted'"/>
+                        <button name="action_collect_signature"
+                                string="Collect Customer Signature"
+                                type="object"
+                                class="oe_highlight"
+                                groups="grnlnd_task.group_driver_access"
+                                invisible="state != '01_in_progress' or ticket_type != 'digital' or state == '1_done'"/>
+                        <button name="action_preview_job"
+                                string="Preview"
+                                type="object"
+                                class="oe_highlight"
+                                groups="grnlnd_task.group_driver_access,grnlnd_task.group_dispatcher_access,project.group_project_manager"
+                                invisible="state != '1_done' or ticket_type != 'digital'"/>
+                        <button name="action_mark_done"
+                                string="Done"
+                                type="object"
+                                class="btn-secondary"
+                                groups="grnlnd_task.group_driver_access,grnlnd_task.group_dispatcher_access,project.group_project_manager"
+                                invisible="state == '1_done' or ticket_type != 'digital'"/>
+                    </header>
+                </xpath>
+
+                <xpath expr="//page[@name='description_page']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='priority']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='project_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="replace">
+                    <field name="invoice_state" invisible="1"/>
+                    <field name="service_ticket_number" placeholder="Service Ticket Number" required="is_manual_ticket" readonly="not is_manual_ticket"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="contract_type" invisible="1"/>
+                    <field name="disposal_facility_delivery_note"
+                        readonly="invoice_state == 'posted' or is_done_readonly"
+                        string="Disposal Facility Delivery Note #"
+                        invisible="contract_type == 'Non Hazardous'"
+                        groups="grnlnd_task.group_driver_access"/>
+                    <field name="disposal_facility_delivery_note"
+                        readonly="invoice_state == 'posted'"
+                        string="Disposal Facility Delivery Note #"
+                        invisible="contract_type == 'Non Hazardous'"
+                        groups="grnlnd_task.group_data_entry"/>
+                    <field name="disposal_facility_delivery_note"
+                        readonly="invoice_state == 'posted'"
+                        string="Disposal Facility Delivery Note #"
+                        invisible="contract_type == 'Non Hazardous'"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+                    <field name="disposal_facility_name"
+                        string="Disposal Facility Name"
+                        readonly="1"
+                        options="{'no_open': True, 'no_create': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        invisible="contract_type == 'Non Hazardous'"
+                        required="contract_type == 'Hazardous'"
+                        groups="grnlnd_task.group_driver_access"/>
+                    <field name="disposal_facility_name"
+                        string="Disposal Facility Name"
+                        readonly="invoice_state == 'posted'"
+                        options="{'no_create': True, 'no_open': True}"
+                        invisible="contract_type == 'Non Hazardous'"
+                        required="contract_type == 'Hazardous'"
+                        groups="grnlnd_task.group_data_entry"/>
+                    <field name="disposal_facility_name"
+                        string="Disposal Facility Name"
+                        readonly="invoice_state == 'posted'"
+                        options="{'no_create': True, 'no_open': True}"
+                        invisible="contract_type == 'Non Hazardous'"
+                        required="contract_type == 'Hazardous'"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+                    <field name="disposal_date"
+                        string="Disposal Date"
+                        readonly="invoice_state == 'posted' or is_done_readonly"
+                        invisible="contract_type == 'Non Hazardous'"
+                        groups="grnlnd_task.group_driver_access"/>
+                    <field name="disposal_date"
+                        string="Disposal Date"
+                        readonly="invoice_state == 'posted'"
+                        invisible="contract_type == 'Non Hazardous'"
+                        groups="grnlnd_task.group_data_entry"/>
+                    <field name="disposal_date"
+                        string="Disposal Date"
+                        readonly="invoice_state == 'posted'"
+                        invisible="contract_type == 'Non Hazardous'"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+                </xpath>
+                <xpath expr="//field[@name='user_ids']" position="after">
+                    <field name="contract_type" invisible="1"/>
+                    <!-- For Drivers: Fully Readonly and No Internal Link -->
+                    <field name="contract_customer_id"
+                        required="1"
+                        readonly="1"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        groups="grnlnd_task.group_driver_access"/>
+
+                    <!-- For Data Entry: Editable Dropdown, No Internal Link -->
+                    <field name="contract_customer_id"
+                        options="{'no_create': True}"
+                        required="1"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <!-- For Other Users: Full Access -->
+                    <field name="contract_customer_id"
+                        required="1"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+                    
+                    <field name="sale_contract_id"
+                        string="Contract"
+                        required="not task_sale_order_id or sale_contract_id"
+                        readonly="1"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        domain="[('partner_id', '=', contract_customer_id), ('contract_type', '=', contract_type), ('state', 'in', ['Ongoing','Expire Soon'])]"
+                        invisible="task_sale_order_id"
+                        groups="grnlnd_task.group_driver_access"/>
+
+                    <field name="sale_contract_id"
+                        string="Contract"
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        domain="[('partner_id', '=', contract_customer_id), ('contract_type', '=', contract_type), ('state', 'in', ['Ongoing','Expire Soon'])]"
+                        invisible="task_sale_order_id"
+                        required="not task_sale_order_id or sale_contract_id"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <field name="sale_contract_id"
+                        string="Contract"
+                        domain="[('partner_id', '=', contract_customer_id), ('contract_type', '=', contract_type), ('state', 'in', ['Ongoing','Expire Soon'])]"
+                        invisible="task_sale_order_id"
+                        required="not task_sale_order_id or sale_contract_id"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+
+                    <field name="task_sale_order_id"
+                        readonly="1"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        domain="[('partner_id', '=', contract_customer_id), ('order_type', '=', contract_type),('state', '=', 'sale')]"
+                        invisible="sale_contract_id"
+                        groups="grnlnd_task.group_driver_access"/>
+
+                    <field name="task_sale_order_id"
+                        domain="[('partner_id', '=', contract_customer_id), ('order_type', '=', contract_type),('state', '=', 'sale')]"
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        invisible="sale_contract_id"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <field name="task_sale_order_id"
+                        domain="[('partner_id', '=', contract_customer_id), ('order_type', '=', contract_type),('state', '=', 'sale')]"
+                        invisible="sale_contract_id"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+
+                    <!-- <field name="driver"
+                        required="1"
+                        readonly="1"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        groups="grnlnd_task.group_driver_access"/>
+
+                    <field name="driver"
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        required="1"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <field name="driver"
+                        required="1"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/> -->
+
+                    <field name="driver_id"
+                        required="1"
+                        readonly="1"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        groups="grnlnd_task.group_driver_access"/>
+
+                    <field name="driver_id"
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        required="1"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <field name="driver_id"
+                        required="1"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+    
+                    <!-- For Drivers -->
+                    <field name="vehicle_number"
+                        string="Vehicle Plate No."
+                        required="1"
+                        readonly="1"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open o_driver_readonly_force"
+                        groups="grnlnd_task.group_driver_access"/>
+
+                    <!-- For Data Entry -->
+                    <field name="vehicle_number"
+                        string="Vehicle Plate No."
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        required="1"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <!-- For Others -->
+                    <field name="vehicle_number"
+                        string="Vehicle Plate No."
+                        required="1"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+
+                    <!-- For Drivers -->
+                    <field name="container_in"
+                        string="Container In"
+                        required="0"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open"
+                        groups="grnlnd_task.group_driver_access"
+                        readonly="is_done_readonly"/>
+
+                    <!-- For Data Entry -->
+                    <field name="container_in"
+                        string="Container In"
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        required="0"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <!-- For Others -->
+                    <field name="container_in"
+                        string="Container In"
+                        required="0"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+                    
+                    <!-- For Drivers -->
+                    <field name="container_out"
+                        string="Container Out"
+                        required="0"
+                        options="{'no_create': True, 'no_open': True}"
+                        class="o_field_many2one_no_open"
+                        groups="grnlnd_task.group_driver_access"
+                        readonly="is_done_readonly"/>
+
+                    <!-- For Data Entry -->
+                    <field name="container_out"
+                        string="Container Out"
+                        class="o_field_many2one_no_open"
+                        options="{'no_open': True, 'no_create': True}"
+                        required="0"
+                        groups="grnlnd_task.group_data_entry"/>
+
+                    <!-- For Others -->
+                    <field name="container_out"
+                        string="Container Out"
+                        required="0"
+                        groups="!grnlnd_task.group_data_entry,!grnlnd_task.group_driver_access"/>
+                    <field name="signature_image" widget="image" readonly="1" invisible="ticket_type != 'digital'"/>
+                </xpath>
+                <xpath expr="//label[@for='date_deadline']" position="attributes">
+                    <attribute name="readonly">invoice_state == 'posted' or is_driver_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_deadline']" position="replace">
+                    <field name="is_manual_ticket" invisible="1"/>
+                    <field name="date_deadline" required="is_manual_ticket" widget="date" readonly="invoice_state == 'posted' or is_done_readonly" options="{'no_open': True}"/>
+                    <field name="lock" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='date_deadline']" position="after">
+                    <field name="invoice_display" string="Invoice" readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='user_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="service_page" string="Services">
+                        <field name="contract_service_ids" readonly="lock" string="Services" required="1">
+                            <tree string="Services Line" readonly="lock" editable="bottom" limit="200">
+                                <field name="is_driver_user" column_invisible ="1"/>
+                                <field name="contract_type" column_invisible="1"/>
+                                <field name="is_qty_editable" column_invisible="1"/>
+                                <field name="product_domain" column_invisible="1"/>
+                                <field name="invoice_state" column_invisible="1"/>
+                                <field name="lock" column_invisible="1"/>
+                                <field name="available_location_ids" column_invisible="1"/>
+                                <field name="name" string="Services" domain="product_domain" options="{'no_create': True, 'no_open': True}" readonly="is_driver_user or invoice_state == 'posted'" required="1"/>
+                                <field name="location" string="Location"
+                                       options="{'no_create': True, 'no_open': True}"
+                                       class="o_field_many2one_no_open o_driver_readonly_force"
+                                       groups="grnlnd_task.group_driver_access"/>
+                                       attrs="{'readonly': ['|', ('is_driver_user', '=', True), ('invoice_state', '=', 'posted')]}"/>
+                                <field name="quantity" string="QTY" readonly="not is_qty_editable or invoice_state == 'posted'"/>
+                                <field name="product_uom_id" string="Unit"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                <xpath expr="//field[@name='is_todo_task']" position="after">
+                    <field name="is_driver_user" invisible="1"/>
+                    <field name="is_done_readonly" invisible="1"/>
+                </xpath>
+                <xpath expr="//page[@name='extra_info']" position="replace" groups="grnlnd_task.group_driver_access"/>
+            </field>
+        </record>
+
+         <record id="view_granland_task_inherit_form_remove_trash" model="ir.ui.view">
+            <field name="name">project.task.view.inherited.remove.trash</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="grnlnd_task.view_granland_task_inherit_form"/>
+            <field name="priority">31</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contract_service_ids']/tree" position="replace">
+                    <!-- Tree view for drivers (no delete button) -->
+                    <tree string="Services Line" editable="bottom" delete="False" groups="grnlnd_task.group_driver_access" readonly="lock" limit="200">
+                        <field name="is_driver_user" column_invisible="1"/>
+                        <field name="contract_type" column_invisible="1"/>
+                        <field name="is_qty_editable" column_invisible="1"/>
+                        <field name="product_domain" column_invisible="1"/>
+                        <field name="invoice_state" column_invisible="1"/>
+                        <field name="lock" column_invisible="1"/>
+                        <field name="available_location_ids" column_invisible="1"/>
+                        <field name="name" string="Services" domain="product_domain" options="{'no_create': True, 'no_open': True}" readonly="is_driver_user or invoice_state == 'posted'" required="1"/>
+                        <field name="location" string="Location"
+                               options="{'no_create': True, 'no_open': True}"
+                               class="o_field_many2one_no_open o_driver_readonly_force"
+                               groups="grnlnd_task.group_driver_access"/>
+                                attrs="{'readonly': ['|', ('is_driver_user', '=', True), ('invoice_state', '=', 'posted')]}"/>
+                        <field name="quantity" string="QTY" readonly="not is_qty_editable or invoice_state == 'posted'"/>
+                        <field name="product_uom_id" string="Unit"/>
+                    </tree>
+                    <!-- Tree view for non-drivers (with delete button) -->
+                    <tree string="Services Line" editable="bottom" groups="!grnlnd_task.group_driver_access" readonly="lock" limit="200">
+                        <field name="is_driver_user" column_invisible="1"/>
+                        <field name="contract_type" column_invisible="1"/>
+                        <field name="is_qty_editable" column_invisible="1"/>
+                        <field name="product_domain" column_invisible="1"/>
+                        <field name="invoice_state" column_invisible="1"/>
+                        <field name="lock" column_invisible="1"/>
+                        <field name="available_location_ids" column_invisible="1"/>
+                        <field name="name" string="Services" domain="product_domain" options="{'no_create': True, 'no_open': True}" readonly="is_driver_user or invoice_state == 'posted'" required="1"/>
+                        <field name="location" string="Location" options="{'no_create': True, 'no_open': True}" readonly="is_driver_user or invoice_state == 'posted'"/>
+                        <field name="quantity" string="QTY" readonly="not is_qty_editable or invoice_state == 'posted'"/>
+                        <field name="product_uom_id" string="Unit"/>
+                    </tree>
+                </xpath>
+            </field>
+        </record>
+
+         <record id="view_granland_subscription_inherit_form" model="ir.ui.view">
+               <field name="name">subscription.contracts.view.inherited</field>
+               <field name="model">subscription.contracts</field>
+               <field name="inherit_id" ref="sales_contract_and_recurring_invoices.subscription_contracts_view_form"/>
+               <field name="priority">100</field>
+               <field name="arch" type="xml">
+                   <xpath expr="//button[@name='action_to_confirm']" position="after">
+                       <button name="action_create_task_ticket"
+                               class="oe_highlight"
+                               string="Generate Service Ticket"
+                               type="object"
+                               invisible="state not in ('Ongoing','Expire Soon')"
+                               help="Generate Service Ticket for your Contracts"/>
+                       <button name="action_send_contract_email"
+                               class="oe_highlight"
+                               string="Send Email"
+                               type="object"
+                               invisible="state not in ('Ongoing','Expire Soon')"
+                               help="Send Email regarding Contract"/>
+                       <button name="open_generate_invoice_wizard"
+                           class="oe_highlight"
+                           string="Generate Invoice"
+                           type="object"
+                           invisible="state not in ('Ongoing','Expire Soon')"
+                           help="Generate Invoices for your Contracts"/>
+                   </xpath>
+                   <xpath expr="//button[@name='action_get_invoice']" position="after">
+                       <button class="oe_stat_button" type="object"
+                                   name="action_get_task"
+                                   icon="fa-tasks"
+                                   invisible="state not in ('Ongoing', 'Expire Soon', 'Expired','Cancelled')"
+                                   >
+                               <field string="Service Tickets"
+                                      name="ticket_task_count" widget="statinfo"
+                               />
+                           </button>
+
+                   </xpath>
+                   <xpath expr="//field[@name='contract_reminder']" position="before">
+                       <field name="contract_type" string="Contract Type" required="1" readonly="lock"/>
+                       <field name="payment_terms_id" readonly="lock"/>
+                       <field name="customer_po" readonly="lock"/>
+                   </xpath>
+               </field>
+         </record>
+         <record id="view_task_tree3" model="ir.ui.view">
+               <field name="name">service.tickets.tree</field>
+               <field name="model">project.task</field>
+               <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <tree js_class="task_list_invoice_link" default_order="state, contract_customer_id, date_deadline desc, id desc">
+                    <header>
+                        <button name="action_generate_service_invoice" 
+                                string="Generate Invoice" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button name="action_open_link_invoice_wizard"
+                                string="Link to Existing Invoice"
+                                type="object"
+                                class="btn-primary o_btn_link_invoice"/>
+                    </header>
+                    <field name="id" optional="hide"/>
+                    <field name="contract_customer_id"/>
+                    <field name="service_ticket_number"/>
+                    <!-- <field name="driver"/> -->
+                    <field name="driver_id"/>
+                    <field name="vehicle_number"/>
+                    <field name="date_deadline" string="Service Date"/>
+                    <field name="first_location" string="Location"/>
+                    <field name="first_service" string="Services"/>
+                    <field name="invoice_display" string="Invoice Number" optional="hide"/>
+                    <field name="state" string="Status" optional="hide" decoration-success="state == '1_done'" decoration-warning="state == '01_in_progress'" decoration-info="state == '03_approved'" decoration-danger="state in ('06_cancelled', '02_changes_requested')"/>
+                    <field name="driver_status" string="Driver Status" optional="hide" invisible="1"/>
+                    <field name="create_uid" string="Created By" optional="hide" groups="base.group_system,grnlnd_task.group_dispatcher_access"/>
+                    <field name="invoice_state" string="Invoice State"/>
+                </tree>
+                
+
+               </field>
+           </record>
+
+       <!-- DRIVER-SPECIFIC TREE VIEW -->
+       <record id="view_task_tree_driver" model="ir.ui.view">
+               <field name="name">service.tickets.tree.driver</field>
+               <field name="model">project.task</field>
+               <field name="mode">primary</field>
+               <field name="arch" type="xml">
+                   <tree default_order="driver_status, contract_customer_id, date_deadline desc, id desc">
+                       <field name="id" optional="hide"/>
+                       <field name="contract_customer_id"/>
+                       <field name="service_ticket_number"/>
+                       <field name="driver_id"/>
+                       <field name="vehicle_number"/>
+                       <field name="date_deadline" string="Service Date"/>
+                       <field name="first_location" string="Location"/>
+                       <field name="first_service" string="Services"/>
+                       <field name="driver_status" string="Status" decoration-success="driver_status == '1_done'" decoration-warning="driver_status == '01_in_progress'"/>
+                       <field name="invoice_state" string="Invoice State"/>
+                   </tree>
+               </field>
+           </record>
+
+       <record id="project_todo.project_task_action_todo" model="ir.actions.act_window">
+           <field name="name">To-dos</field>
+           <field name="domain">[('is_todo_task', '=', True), ('user_ids', 'in', [uid]), ('project_id', '=', False), ('parent_id', '=', False)]</field>
+           <field name="context">{'default_is_todo_task': True, 'search_default_open_tasks': 1, 'tree_view_ref': 'project_todo.project_task_view_todo_tree'}</field>
+       </record>
+
+       <!-- ORIGINAL ACTIONS (for admins and dispatchers) -->
+       <record id="action_contract_type_non_hazardous" model="ir.actions.act_window">
+           <field name="name">Non Hazardous Service Ticket</field>
+           <field name="res_model">project.task</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[('contract_type', '=', 'Non Hazardous'),('is_todo_task', '=', False)]</field>
+           <field name="context">{'default_contract_type': 'Non Hazardous','default_is_todo_task': False,'default_ticket_type': 'manual','group_by': 'contract_customer_id'}</field>
+           <field name="view_id" ref="view_task_tree3"/>
+           <field name="search_view_id" eval="False"/>
+       </record>
+
+       <record id="action_contract_type_hazardous" model="ir.actions.act_window">
+           <field name="name">Hazardous Service Ticket</field>
+           <field name="res_model">project.task</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[('contract_type', '=', 'Hazardous'),('is_todo_task', '=', False)]</field>
+           <field name="context">{'default_contract_type': 'Hazardous','default_is_todo_task': False ,'default_ticket_type': 'manual','group_by': 'contract_customer_id'}</field>
+           <field name="view_id" ref="view_task_tree3"/>
+           <field name="search_view_id" eval="False"/>
+       </record>
+
+       <!-- DISPATCHER-SPECIFIC ACTIONS (only see tickets created by them) -->
+       <record id="action_contract_type_non_hazardous_dispatcher" model="ir.actions.act_window">
+           <field name="name">Non Hazardous Service Ticket</field>
+           <field name="res_model">project.task</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[('contract_type', '=', 'Non Hazardous'),('is_todo_task', '=', False),('create_uid', '=', uid)]</field>
+           <field name="context">{'default_contract_type': 'Non Hazardous','default_is_todo_task': False,'default_ticket_type': 'manual','group_by': 'contract_customer_id'}</field>
+           <field name="view_id" ref="view_task_tree3"/>
+           <field name="search_view_id" eval="False"/>
+       </record>
+
+       <record id="action_contract_type_hazardous_dispatcher" model="ir.actions.act_window">
+           <field name="name">Hazardous Service Ticket</field>
+           <field name="res_model">project.task</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[('contract_type', '=', 'Hazardous'),('is_todo_task', '=', False),('create_uid', '=', uid)]</field>
+           <field name="context">{'default_contract_type': 'Hazardous','default_is_todo_task': False ,'default_ticket_type': 'manual','group_by': 'contract_customer_id'}</field>
+           <field name="view_id" ref="view_task_tree3"/>
+           <field name="search_view_id" eval="False"/>
+       </record>
+
+       <!-- DRIVER-SPECIFIC ACTIONS (with hierarchical grouping) -->
+       <record id="action_contract_type_non_hazardous_driver" model="ir.actions.act_window">
+           <field name="name">Non Hazardous Service Ticket</field>
+           <field name="res_model">project.task</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[
+               ('contract_type', '=', 'Non Hazardous'),
+               ('is_todo_task', '=', False)
+           ]</field>
+           <field name="context">{'default_contract_type': 'Non Hazardous','default_is_todo_task': False,'default_ticket_type': 'manual','create': False,'group_by': ['driver_status','contract_customer_id','date_deadline:month']}</field>
+           <field name="view_id" ref="view_task_tree_driver"/>
+           <field name="search_view_id" eval="False"/>
+       </record>
+
+       <record id="action_contract_type_hazardous_driver" model="ir.actions.act_window">
+           <field name="name">Hazardous Service Ticket</field>
+           <field name="res_model">project.task</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[
+               ('contract_type', '=', 'Hazardous'),
+               ('is_todo_task', '=', False)
+           ]</field>
+           <field name="context">{'default_contract_type': 'Hazardous','default_is_todo_task': False ,'default_ticket_type': 'manual','create': False,'group_by': ['driver_status','contract_customer_id','date_deadline:month']}</field>
+           <field name="view_id" ref="view_task_tree_driver"/>
+           <field name="search_view_id" eval="False"/>
+       </record>
+
+       <!-- MENU STRUCTURE -->
+       <menuitem
+           name="Greenland Services"
+           id="menu_main_grnlnd"
+           web_icon="grnlnd_task,static/description/icon.png"
+           sequence="72"
+       />
+
+       <menuitem
+           name="Services"
+           id="menu_service_management"
+           parent="menu_main_grnlnd"
+           sequence="1"
+       />
+
+       <!-- ORIGINAL MENU ITEMS (for admins and dispatchers only) -->
+       <menuitem id="menu_contract_type_non_hazardous"
+             name="Non Hazardous Service Ticket"
+             parent="menu_service_management"
+             action="action_contract_type_non_hazardous"
+             groups="base.group_system,grnlnd_task.group_data_entry"
+             sequence="1"
+       />
+
+       <menuitem id="menu_contract_type_hazardous"
+             name="Hazardous Service Ticket"
+             parent="menu_service_management"
+             action="action_contract_type_hazardous"
+             groups="base.group_system,grnlnd_task.group_data_entry"
+             sequence="2"
+       />
+
+       <!-- DISPATCHER-SPECIFIC MENU ITEMS (only see tickets created by them) -->
+       <menuitem id="menu_contract_type_non_hazardous_dispatcher"
+             name="Non Hazardous Service Ticket"
+             parent="menu_service_management"
+             action="action_contract_type_non_hazardous_dispatcher"
+             groups="grnlnd_task.group_dispatcher_access"
+             sequence="1"
+       />
+
+       <menuitem id="menu_contract_type_hazardous_dispatcher"
+             name="Hazardous Service Ticket"
+             parent="menu_service_management"
+             action="action_contract_type_hazardous_dispatcher"
+             groups="grnlnd_task.group_dispatcher_access"
+             sequence="2"
+       />
+
+       <!-- DRIVER-SPECIFIC MENU ITEMS (drivers see all tickets, including Done) -->
+       <menuitem id="menu_contract_type_non_hazardous_driver"
+             name="Non Hazardous Service Ticket"
+             parent="menu_service_management"
+             action="action_contract_type_non_hazardous_driver"
+             groups="grnlnd_task.group_driver_access"
+             sequence="3"
+       />
+
+       <menuitem id="menu_contract_type_hazardous_driver"
+             name="Hazardous Service Ticket"
+             parent="menu_service_management"
+             action="action_contract_type_hazardous_driver"
+             groups="grnlnd_task.group_driver_access"
+             sequence="4"
+       />
+
+       <menuitem
+           name="Customers"
+           id="menu_customers"
+           parent="menu_main_grnlnd"
+           action="account.res_partner_action_customer"
+           sequence="2"
+       />
+
+       <!-- REST OF YOUR EXISTING RECORDS -->
+       <record id="subscription_contracts_line_inherit_grnlnd_view_tree" model="ir.ui.view">
+           <field name="name">subscription.contracts.line.greenland.view.tree</field>
+           <field name="inherit_id" ref="sales_contract_and_recurring_invoices.subscription_contracts_line_view_tree"/>
+           <field name="model">subscription.contracts.line</field>
+           <field name="arch" type="xml">
+                   <xpath expr="//field[@name='product_id']" position="before">
+                       <field name="product_domain"  column_invisible="1"/>
+                   </xpath>
+                   <xpath expr="//field[@name='product_id']" position="attributes">
+                       <attribute name="domain">product_domain</attribute>
+                   </xpath>
+                   <xpath expr="//field[@name='product_uom_qty']" position="before">
+                       <field name="location"/>
+                       <field name="service_type" required="1"/>
+                   </xpath>
+                   <xpath expr="//field[@name='description']" position="after">
+                       <field name="name_ar" string="Description(Arabic)" required="1"/>
+                   </xpath>
+
+              </field>
+          </record>
+
+         <record id="project.view_task_search_form_project_base" model="ir.ui.view">
+               <field name="name">project.task.search.form.project.base</field>
+               <field name="model">project.task</field>
+               <field name="inherit_id" ref="project.view_task_search_form_project_fsm_base"/>
+               <field name="mode">primary</field>
+               <field name="priority">999</field>
+               <field name="arch" type="xml">
+                   <xpath expr="//field[@name='name']" position="before">
+                        <field name="service_ticket_number" string="Service Ticket Number"/>
+                   </xpath>
+                   <filter name="date_last_stage_update" position="after">
+                       <filter string="Service Date" name="date_deadline" date="date_deadline"/>
+                       <field name="customer_id" string="Customer ID"/>
+                       <field name="ref" string="Filing Reference"/>
+                   </filter>
+                   <filter name="last_stage_update" position="after">
+                       <filter string="Service Date" name="deadline" context="{'group_by': 'date_deadline'}"/>
+                       <separator/>
+                       <filter string="Properties" name="group_by_properties" context="{'group_by': 'task_properties'}" groups="base.group_user"/>
+                   </filter>
+               </field>
+           </record>
+
+         <record id="subscription_contracts_view_tree2" model="ir.ui.view">
+           <field name="name">subscription.contracts.view.tree2</field>
+           <field name="model">subscription.contracts</field>
+             <field name="inherit_id" ref="sales_contract_and_recurring_invoices.subscription_contracts_view_tree"/>
+           <field name="arch" type="xml">
+               <tree position="inside">
+                   <field name="contract_type"/>
+               </tree>
+               <tree position="attributes">
+                   <attribute name="default_group_by">contract_type</attribute>
+               </tree>
+           </field>
+         </record>
+
+         <record id="subscription_contracts_search_view_inherit" model="ir.ui.view">
+           <field name="name">subscription.contracts.search.inherited</field>
+           <field name="model">subscription.contracts</field>
+           <field name="inherit_id" ref="sales_contract_and_recurring_invoices.subscription_contracts_search_view"/>
+           <field name="arch" type="xml">
+               <search position="inside">
+                   <field name="customer_id" string="Customer ID"/>
+                   <field name="ref" string="Filing Reference"/>
+               </search>
+           </field>
+         </record>
+
+         <record id="view_contract_invoice_wizard_form" model="ir.ui.view">
+           <field name="name">contract.invoice.wizard.form</field>
+           <field name="model">contract.invoice.wizard</field>
+           <field name="arch" type="xml">
+               <form string="Generate Invoice">
+                   <group>
+                       <field name="start_date" />
+                       <field name="end_date" />
+                   </group>
+                   <footer>
+                       <button string="Generate" type="object" name="action_generate_invoice" class="btn-primary"/>
+                       <button string="Cancel" class="btn-secondary" special="cancel"/>
+                   </footer>
+               </form>
+           </field>
+         </record>
+            <record id="view_task_search_inherit_invoice_state" model="ir.ui.view">
+            <field name="name">project.task.search.inherit.invoice.state</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form_base"/> <!-- Change ref to your model's search view -->
+            <field name="arch" type="xml">
+                  <!-- Add to Group By dropdown -->
+                <xpath expr="//group" position="inside">
+                    <filter name="group_by_invoice_state"
+                            string="Invoice State"
+                            context="{'group_by': 'invoice_state'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

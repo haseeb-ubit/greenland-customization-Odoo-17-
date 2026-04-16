@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Disposal Facilitator Form View -->
+    <record id="disposal_facilitator_form_view" model="ir.ui.view">
+        <field name="name">disposal.facilitator.form</field>
+        <field name="model">disposal.facilitator</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Menu Action -->
+    <record id="action_disposal_facilitator" model="ir.actions.act_window">
+        <field name="name">Disposal Facilitator</field>
+        <field name="res_model">disposal.facilitator</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_disposal_facilitator"
+              name="Disposal Facilitator"
+              parent="sale.menu_sale_config"
+              action="action_disposal_facilitator"
+              sequence="20"/>
+</odoo>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view for journal items grouped by entry -->
+    <record id="view_account_move_line_grouped_tree" model="ir.ui.view">
+        <field name="name">account.move.line.grouped.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="parent_state == 'draft'" decoration-success="parent_state == 'posted'" create="false" edit="false" delete="false">
+                <field name="move_id" column_invisible="1"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="company_currency_id" column_invisible="1"/>
+                <field name="account_id" string="Account"/>
+                <field name="partner_id" string="Partner"/>
+                <field name="name" string="Label"/>
+                <field name="debit" sum="Total Debit"/>
+                <field name="credit" sum="Total Credit"/>
+                <field name="parent_state" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view for grouped journal entries -->
+    <record id="view_account_move_group_form" model="ir.ui.view">
+        <field name="name">account.move.group.form</field>
+        <field name="model">account.move.group</field>
+        <field name="arch" type="xml">
+            <form string="Grouped Journal Entries">
+                <header>
+                    <button name="action_create_entry" string="Create New Entry" type="object" class="btn-primary"/>
+                    <button name="action_view_all_lines" string="View All Journal Items (Grouped)" type="object" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_entries" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-list">
+                            <field name="entry_count" widget="statinfo" string="Entries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="journal_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="state" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Journal Entries List -->
+                    <separator string="Journal Entries"/>
+                    <field name="move_ids" nolabel="1" context="{'default_partner_id': partner_id, 'default_journal_id': journal_id, 'default_move_type': 'entry'}">
+                        <tree decoration-info="state == 'draft'" decoration-success="state == 'posted'" decoration-muted="state == 'cancel'" create="false">
+<!--                            <field name="sequence_in_group" string="#"/>-->
+                            <field name="name" string="Entry Number"/>
+                            <field name="date" string="Date"/>
+                            <field name="ref" string="Reference"/>
+<!--                            <field name="amount_total" string="Total" sum="Total"/>-->
+                            <field name="state" widget="badge"/>
+                            <button name="action_post" string="Post" type="object" 
+                                    class="btn-link" 
+                                    invisible="state != 'draft'"
+                                    icon="fa-check"/>
+                            <button name="button_draft" string="Reset" type="object" 
+                                    class="btn-link" 
+                                    invisible="state != 'posted'"
+                                    icon="fa-undo"/>
+                        </tree>
+                    </field>
+                    
+                    <!-- All Journal Items from all entries -->
+                    <separator string="All Journal Items"/>
+                    <field name="all_line_ids" nolabel="1" readonly="1">
+                        <tree decoration-info="parent_state == 'draft'" decoration-success="parent_state == 'posted'" default_order="move_id, id" no_open="True">
+                            <field name="move_id" string="Entry"/>
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="company_currency_id" column_invisible="1"/>
+                            <field name="account_id" string="Account"/>
+                            <field name="partner_id" string="Partner" optional="show"/>
+                            <field name="name" string="Label"/>
+                            <field name="debit" sum="Total Debit"/>
+                            <field name="credit" sum="Total Credit"/>
+                            <field name="parent_state" column_invisible="1"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree view for grouped journal entries -->
+    <record id="view_account_move_group_tree" model="ir.ui.view">
+        <field name="name">account.move.group.tree</field>
+        <field name="model">account.move.group</field>
+        <field name="arch" type="xml">
+            <tree string="Grouped Journal Entries">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <field name="entry_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search view for grouped journal entries -->
+    <record id="view_account_move_group_search" model="ir.ui.view">
+        <field name="name">account.move.group.search</field>
+        <field name="model">account.move.group</field>
+        <field name="arch" type="xml">
+            <search string="Search Grouped Entries">
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <filter string="Active Groups" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Draft Groups" name="draft" domain="[('state', '=', 'draft')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Partner" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Journal" name="group_journal" context="{'group_by': 'journal_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for grouped journal entries -->
+    <record id="action_account_move_group" model="ir.actions.act_window">
+        <field name="name">Grouped Journal Entries</field>
+        <field name="res_model">account.move.group</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a grouped journal entry
+            </p>
+            <p>
+                Group multiple journal entries for the same employee/partner together for easier management.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu item under Accounting -->
+    <menuitem id="menu_account_move_group"
+              name="Grouped Journal Entries"
+              parent="account.menu_finance_entries"
+              action="action_account_move_group"
+              sequence="10"/>
+</odoo>

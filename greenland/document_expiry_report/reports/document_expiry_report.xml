@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_document_expiry">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <style>
+                    @font-face {
+                        font-family: 'Montserrat';
+                        src: url('/grnlnd_task/static/src/fonts/Montserrat-Bold.ttf') format('truetype');
+                        font-weight: 700;
+                        font-style: normal;
+                    }
+                    @font-face {
+                        font-family: 'Montserrat';
+                        src: url('/grnlnd_task/static/src/fonts/Montserrat-SemiBold.ttf') format('truetype');
+                        font-weight: 500;
+                        font-style: normal;
+                    }
+                    td {
+                        font-size: 11px;
+                        font-family: 'Montserrat';
+                        font-weight: 600;
+                    }
+                    th {
+                        font-family: 'Montserrat';
+                        font-weight: 700;
+                    }
+                    .watermarked-page {
+                        background: url('/grnlnd_task/static/src/img/bg.png') no-repeat center;
+                        background-size: 105%;
+                        position: relative;
+                        margin-top: 0px;
+                    }
+                    .content-wrapper {
+                        position: relative;
+                        z-index: 2;
+                    }
+                </style>
+                <!-- Add Watermark Background -->
+                <div class="watermarked-page">
+                    <!-- Custom Header -->
+                    <t t-call="grnlnd_task.custom_header_template"/>
+
+                    <!-- Report Title -->
+                    <div style="text-align: left; font-family: 'Montserrat'; font-size: 20px; font-weight: 700; color: #00662e; margin-left: 3px; margin-bottom: 5px;">
+                        DOCUMENT EXPIRY REPORT
+                    </div>
+                    <hr style="border: 1px #cee0bb; margin-top: 0; margin-left: 3px;"/>
+
+                    <!-- Main Content -->
+                    <div class="page">
+                        <p>
+                            <strong>From: </strong><span t-esc="start_date"/>
+                            <strong>To: </strong><span t-esc="end_date"/>
+                        </p>
+                        <t t-if="not docs or not docs.exists()">
+                            <p>No documents found for the selected period.</p>
+                        </t>
+                        <t t-else="">
+                            <table class="table table-bordered mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left">Filing Reference</th>
+                                        <th class="text-left">Customer Name</th>
+                                        <th class="text-left">Document Name</th>
+                                        <th class="text-left">Expiration Date</th>
+                                        <th class="text-left">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs" t-as="doc">
+                                        <tr>
+                                            <td class="text-left">
+                                                <span t-out="doc.customer_id.ref or 'N/A'"/> <!-- Fetch ref from res.partner -->
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-out="doc.customer_id.name or 'N/A'"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-out="doc.name or 'N/A'"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-out="doc.get_document_data()['expiry_date']"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-out="doc.state or 'N/A'"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+
+                    <!-- Custom Footer -->
+                    <t t-call="grnlnd_task.custom_footer_template1"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_document_expiry_report" model="ir.actions.report">
+        <field name="name">Document Expiry Report</field>
+        <field name="model">customer.documents</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">document_expiry_report.report_document_expiry</field>
+        <field name="report_file">document_expiry_report.report_document_expiry</field>
+        <field name="print_report_name">'Document Expiry Report - %s to %s' % (start_date, end_date)</field>
+        <field name="binding_model_id" ref="model_customer_documents"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

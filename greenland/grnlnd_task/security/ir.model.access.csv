@@ -1,0 +1,29 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_grnlnd_task_grnlnd_task_services_line,grnlnd_task.project_task_services_line,model_project_task_services_line,base.group_user,1,1,1,1
+access_link_invoice_wizard,Link Invoice Wizard,model_link_invoice_wizard,base.group_user,1,1,1,1
+access_grnlnd_task_grnlnd_disposal_facility,grnlnd_task.disposal_facilitator,model_disposal_facilitator,base.group_user,1,1,1,1
+access_grnlnd_task_grnlnd_vehicle,grnlnd_task.vehicle,model_vehicle,base.group_user,1,1,1,1
+access_grnlnd_task_grnlnd_documents,grnlnd_task.documents,model_customer_documents,base.group_user,1,1,1,1
+grnlnd_task.access_contract_invoice_wizard,access_contract_invoice_wizard,grnlnd_task.model_contract_invoice_wizard,base.group_user,1,1,1,1
+grnlnd_task.access_sales_terms_conditions,access_terms_and_conditions,grnlnd_task.model_terms_and_conditions,base.group_user,1,1,1,0
+grnlnd_task.access_sale_order_invoice_wizard,access_sale_order_invoice_wizard,grnlnd_task.model_sale_order_invoice_wizard,base.group_user,1,1,1,0
+access_grnlnd_task_grnlnd_sale_order_location,grnlnd_task.sale_order_location,model_sale_order_location,base.group_user,1,1,1,1
+grnlnd_task.access_terms_category,access_terms_category,grnlnd_task.model_terms_category,base.group_user,1,1,1,1
+grnlnd_task.access_driver,access_driver,grnlnd_task.model_driver,base.group_user,1,1,1,1
+access_service_summary_report_wizard,access_service_summary_report_wizard,model_subscription_contracts_summary_wizard,base.group_user,1,1,1,1
+access_sale_order_summary_wizard,sale.order.summary.wizard,model_sale_order_summary_wizard,,1,1,1,1
+
+
+access_project_task_driver,Driver Access Project Task,project.model_project_task,grnlnd_task.group_driver_access,1,1,0,0
+access_project_task_dispatcher,Dispatcher Access Project Task,project.model_project_task,grnlnd_task.group_dispatcher_access,1,1,1,1
+access_customer_signature_driver,Customer Signature Access,grnlnd_task.model_customer_signature,,1,1,1,1
+access_customer_signature_wizard_driver,Customer Signature Wizard Access,grnlnd_task.model_customer_signature_wizard,,1,1,1,1
+access_grnlnd_task_grnlnd_container,grnlnd_task.container,model_container,base.group_user,1,1,1,1
+
+access_hr_job_dispatcher,Dispatcher Access HR Job,hr.model_hr_job,grnlnd_task.group_dispatcher_access,1,0,0,0
+
+access_service_ticket_share_wizard,service.ticket.share.wizard,grnlnd_task.model_service_ticket_share_wizard,base.group_user,1,1,1,0
+
+access_account_move_group_user,account.move.group user,model_account_move_group,base.group_user,1,0,0,0
+access_account_move_group_accountant,account.move.group accountant,model_account_move_group,account.group_account_user,1,1,1,1
+access_account_move_group_manager,account.move.group manager,model_account_move_group,account.group_account_manager,1,1,1,1

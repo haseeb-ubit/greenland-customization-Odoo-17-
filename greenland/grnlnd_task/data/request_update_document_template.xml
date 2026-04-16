@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <record id="email_template_request_updated_document" model="mail.template">
+            <field name="name">Request for Updated Expired Documents</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="subject">
+                Request for Updated {{ ', '.join(object.grn_document_ids.filtered(lambda d: d.state == 'Expired').mapped('name')) }}
+            </field>
+            <field name="email_from">{{ (user.email_formatted or 'your_email@example.com') }}</field>
+            <field name="partner_to">{{ object.id }}</field>
+            <field name="lang">{{ object.lang }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear <t t-out="object.name" />,
+                        <br/><br/>
+                        I hope this message finds you well. To ensure our records are up to date, could you please provide us with your latest
+                        <t t-set="document_names" t-value="', '.join(object.grn_document_ids.filtered(lambda d: d.state == 'Expired').mapped('name'))"/>
+                        <t t-out="document_names or 'Documents'"/>? This will help us maintain accurate information and continue providing you with timely service.
+                        <br/><br/>
+                        Please send the document at your earliest convenience.
+                        <br/><br/>
+                        Thank you for your cooperation.
+                        <br/><br/>
+                        Best regards,
+                        <br/>
+                        <t t-if="not is_html_empty(user.signature)">
+                            <t t-out="user.signature"/>
+                        </t>
+                    </p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

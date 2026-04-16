@@ -1,0 +1,359 @@
+<odoo>
+    <data>
+        <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
+            <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+                <t t-call="web.basic_layout">
+                    <style>
+                        @font-face {
+                            font-family: 'Montserrat';
+                            src: url('/grnlnd_task/static/src/fonts/Montserrat-Bold.ttf') format('truetype');
+                            font-weight: 700;
+                            font-style: normal;
+                        }
+                        @font-face {
+                            font-family: 'Montserrat';
+                            src: url('/grnlnd_task/static/src/fonts/Montserrat-SemiBold.ttf') format('truetype');
+                            font-weight: 500;
+                            font-style: normal;
+                        }
+                        td {
+                            font-size: 10px;
+                            font-family: 'Montserrat';
+                            font-weight: 600;
+                        }
+                        th {
+                            font-family: 'Montserrat';
+                            font-weight: 700;
+                        }
+                        .watermarked-page {
+                            background: url('/grnlnd_task/static/src/img/bg.png') no-repeat center;
+                            background-size: 105%;
+                            position: relative;
+                            margin-top: 0px;
+                        }
+                        .watermarked-page2 {
+                            background: url('/grnlnd_task/static/src/img/bg-terms.png') no-repeat center center;
+                            background-size: 100%;
+                            position: relative;
+                            height: 970px;
+                        }
+                        .content-wrapper {
+                            position: relative;
+                            z-index: 2;
+                        }
+                        .compact-table td, .compact-table th {
+                            padding: 2px;
+                            border: 1px solid black;
+                        }
+                        .line-items-table td, .line-items-table th {
+                            padding: 6px;
+                            border: 1px solid black;
+                        }
+                    </style>
+                    <div class="watermarked-page">
+                        <t t-call="grnlnd_task.custom_header_template"/>
+                        <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+                        <div style="text-align: left; font-family: 'Montserrat'; font-size: 20px; font-weight: 700; color: #366339; margin-left: 3px; margin-bottom: 3px;">
+                            CUSTOMER QUOTATION
+                        </div>
+                        <hr style="border: 1px solid #cee0bb; margin-top: 0; margin-left: 3px;"/>
+
+                        <div class="row mb-4" style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin-bottom: -15px;">
+
+                            <table class="compact-table" style="width: 50%; padding: 0; margin-right: 5%;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="background-color: #366339; font-size: 14px; color: white; padding: 6px; text-align: center; font-weight: 700; border: 1px solid black;">
+                                            CUSTOMER INFORMATION
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 2px; width: 33%; font-weight: 700;">COMPANY NAME:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.partner_id.name">Aflak Plastic Company</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">ADDRESS/LOCATION:</td>
+                                        <td style="padding: 2px;">
+                                            <span t-if="doc.partner_id and doc.partner_id.street" t-esc="doc.partner_id.street"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.street2 and doc.partner_id.street" t-esc="', '"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.street2" t-esc="doc.partner_id.street2"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.city and doc.partner_id.street2" t-esc="', '"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.city" t-esc="doc.partner_id.city"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.state_id and doc.partner_id.city" t-esc="', '"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.state_id" t-esc="doc.partner_id.state_id.name"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.country_id and doc.partner_id.state_id" t-esc="', '"/>
+                                            <span t-if="doc.partner_id and doc.partner_id.country_id" t-esc="doc.partner_id.country_id.name"/>
+                                            <span t-if="not doc.partner_id.street and not doc.partner_id.street2 and not doc.partner_id.city and not doc.partner_id.state_id and not doc.partner_id.country_id" t-esc="'-'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">COMPANY CR:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.partner_id.company_registry">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">CONTACT NAME:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.contact_name">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">CONTACT POSITION:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.contact_position">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">CONTACT NUMBER:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.contact_number">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">EMAIL ADDRESS:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.contact_email">-</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="compact-table" style="width: 45%; padding: 0;">
+                                <thead>
+                                    <th colspan="2" style="background-color: #366339; font-size: 14px; color: white; padding: 6px; text-align: center; font-weight: 700; border: 1px solid black;">
+                                        QUOTATION DETAILS
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 2px; width: 38%; font-weight: 700;">DATE:</td>
+                                        <td style="padding: 2px;"><span t-esc="doc.date_order.strftime('%d/%b/%Y')">2023-09-12</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">QUOTATION NUMBER:</td>
+                                        <td style="padding: 2px; color: red; font-weight: 900;"><span t-out="doc.name"/><span t-if="doc.quotation_version" t-out="' Revision: '+doc.quotation_version"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">QUOTATION TYPE:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.order_type">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">QUOTATION VALIDITY:</td>
+                                        <td style="padding: 2px;"><span t-esc="str(doc.quotation_validity_days) + ' Days'">0 Days</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">PREPARED BY:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.user_id">Mitchell</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">CONTACT NUMBER:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.user_id.partner_id.phone">0007601</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; font-weight: 700;">CONTACT EMAIL:</td>
+                                        <td style="padding: 2px;"><span t-field="doc.user_id.partner_id.email">admin@admin.com</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <t t-set="lines_to_report" t-value="doc._get_order_lines_to_report()"/>
+                            <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report)"/>
+
+                            <div class="oe_structure"></div>
+                            <table class="line-items-table" style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">تسلسل<br/>SEQ</th>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">الرمز الوحدة <br/>SERVICE SKU</th>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">تفـاصيل السلع أو الخدمـات <br/>NATURE OF GOODS OR SERVICES</th>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">وحدة<br/>Unit</th>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">وحدةالقياس<br/>Unit of Measure</th>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">سعر الوحدة<br/>Unit Rate</th>
+                                        <th style="background-color: #366339; font-size: 12px; color: white; padding: 6px; text-align: center; font-weight: 700; line-height: 1.3;">السعر الإجمالى<br/>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-foreach="lines_to_report" t-as="line">
+                                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                                        <tr>
+                                            <td style="padding: 6px; text-align: center; vertical-align: middle;"><span t-esc="line_index + 1">1</span></td>
+                                            <td style="padding: 6px; text-align: center; vertical-align: middle;"><span t-field="line.product_id.default_code">-</span></td>
+                                            <td style="padding: 6px; text-align: center;">
+                                                <span t-if="line.name" t-esc="line.name" t-options="{'widget': 'text'}"/>
+                                                <span t-if="line.location.name" t-esc="' - ' + line.location.name" t-options="{'widget': 'text'}"/>
+                                                <span t-if="line.name_ar" t-esc="'\n' + line.name_ar" t-options="{'widget': 'text'}"/></td>
+                                            <td style="padding: 6px; text-align: center; vertical-align: middle;"><span t-field="line.product_uom_qty">0</span></td>
+                                            <td style="padding: 6px; text-align: center; vertical-align: middle;"><span t-field="line.product_uom">-</span></td>
+                                            <td style="padding: 6px; text-align: right; vertical-align: middle;"><span class="text-nowrap" t-out="'{:,.2f}'.format(line.price_unit)">0.00</span></td>
+                                            <td style="padding: 6px; text-align: right; vertical-align: middle;"><span class="text-nowrap" t-out="'{:,.2f}'.format(line.price_subtotal)">0.00</span></td>
+                                        </tr>
+                                    </t>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="6" style="padding: 4px; padding-right: 2px; text-align: right; font-weight: 700;">Total Excluding VAT (SAR):</td>
+                                            <td style="padding: 4px; padding-right: 2px; text-align: right; font-weight: 700;">
+                                                <span t-if="doc.calculate_totals" t-out="'{:,.2f}'.format(doc.amount_untaxed)"/><span t-if="not doc.calculate_totals" t-out="'-'"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="padding: 4px; padding-right: 2px; text-align: right; font-weight: 700;">VAT Amount (SAR):</td>
+                                            <td style="padding: 4px; padding-right: 2px; text-align: right; font-weight: 700;"><span t-if="doc.calculate_totals" t-out="'{:,.2f}'.format(doc.amount_tax)"/><span t-if="not doc.calculate_totals" t-out="'-'"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="padding: 4px; padding-right: 2px; text-align: right; font-weight: 700;">Amount Including VAT (SAR):</td>
+                                            <td style="padding: 4px; padding-right: 2px; text-align: right; background-color: #D9D9D9;">
+                                                <span style="font-weight: 700; width: 120px;"><span t-if="doc.calculate_totals" t-out="'{:,.2f}'.format(doc.amount_total)"/><span t-if="not doc.calculate_totals" t-out="'-'"/></span></td>
+                                        </tr>
+                                    </tfoot>
+                                </tbody>
+                            </table>
+
+                            <div class="header-note" style="background-color: #366339; font-size: 10px; color: white; padding: 4px; text-align: center; margin-top: 5px; margin-bottom: 5px; border: 1px solid black; font-weight: 700;">
+                                IF THIS QUOTATION IS ACCEPTED, KINDLY HAVE IT DULY SIGNED BY YOUR AUTHORIZED PERSON AND FILL THE SECTION BELOW WITH SIGNATURE &amp; COMPANY STAMP.
+                            </div>
+
+                            <div class="row mb-4" style="page-break-inside: avoid; display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0;">
+                                <div class="col-6" style="width: 50%; padding: 0; margin-right: 5%;">
+                                    <table class="compact-table" style="width: 100%; margin: 0; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" style="background-color: #366339; font-size: 14px; color: white; text-align: center; padding: 6px; font-weight: 700; border: 1px solid black;">
+                                                    CUSTOMER APPROVAL
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 40%; padding: 2px; font-weight: 700;">QUOTATION NUMBER:</td>
+                                                <td style="padding: 2px; font-weight: 600; text-align: center;">
+                                                    <span t-out="doc.name"/><span t-if="doc.quotation_version" t-out="' Revision: '+doc.quotation_version"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700;">AUTHORIZER NAME:</td>
+                                                <td style="padding: 2px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700;">AUTHORIZER POSITION:</td>
+                                                <td style="padding: 2px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700; vertical-align: middle;">SIGNATURE:</td>
+                                                <td style="text-align: center; padding: 2px; height: 45px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700;">DATE:</td>
+                                                <td style="padding: 2px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700; vertical-align: middle;">COMPANY STAMP:</td>
+                                                <td style="padding: 2px; height: 60px;"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-6" style="width: 45%; padding: 0;">
+                                    <table class="compact-table" style="width: 100%; margin: 0;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" style="background-color: #366339; font-size: 14px; color: white; font-weight: 700; text-align: center; padding: 6px; border: 1px solid black;">
+                                                    INTERNAL APPROVAL
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 40%; padding: 2px; font-weight: 700;">APPROVED BY:</td>
+                                                <td style="padding: 2px;">Sami Moussa</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700;">POSITION:</td>
+                                                <td style="padding: 2px;">General Manager</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700;">DATE:</td>
+                                                <td style="padding: 2px;"><span t-esc="doc.date_order.strftime('%d/%b/%Y')">2023-09-12</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px; font-weight: 700; vertical-align: middle;">SIGNATURE:</td>
+                                                <td style="text-align: center; padding: 2px; height: 50px;">
+                                                    <img src="/grnlnd_task/static/src/img/signature.png" style="width: 90px; height: 50px;" alt="Signature"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align: middle; padding: 2px; font-weight: 700;">COMPANY STAMP:</td>
+                                                <td style="vertical-align: middle; text-align: center; padding: 2px; height: 70px;">
+                                                    <img src="/grnlnd_task/static/src/img/stamp2.png" style="width: 70px; height: 50px;" alt="Stamp"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <t t-call="grnlnd_task.custom_footer_template1"/>
+                    </div>
+                    <div style="page-break-before: always;"></div>
+
+                    <div class="watermarked-page2">
+                        <div style="text-align: left; font-size: 20px; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #366339; margin-left: 15px; margin-bottom: 3px; margin-top: 10px;">
+                            TERMS &amp; CONDITIONS
+                        </div>
+                        <p style="margin-top: -8px;"></p>
+                        <hr style="border: 1px solid #cee0bb; margin-top: 0; margin-left: 10px;"/>
+
+                        <div>
+                            <ol style="margin-bottom: -30px; padding-left: 15px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600;">
+                                <t t-set="row_index" t-value="0"/>
+                                <t t-foreach="doc.terms_and_conditions_ids" t-as="term">
+                                    <t t-set="row_index" t-value="row_index + 1"/>
+                                    <li>
+                                        <span t-esc="term.note"/>
+                                    </li>
+                                </t>
+
+                                <div style="margin-top: -5px;">
+                                    <t t-foreach="docs" t-as="single_doc">
+                                        <t t-if="single_doc.note_lines">
+                                            <t t-foreach="single_doc.note_lines.split('\n')" t-as="line">
+                                                <t t-if="line.strip()" t-set="row_index" t-value="row_index + 1"/>
+                                                <li t-if="line.strip()">
+                                                    <span style="font-family: 'Montserrat', sans-serif; line-height: 2.0; font-size: 14px; font-weight: 600;" t-esc="line.strip()"/><br/>
+                                                </li>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </div>
+                            </ol>
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+
+        <record id="action_service_summary_report_quotation" model="ir.actions.report">
+            <field name="name">Service Summary Report (Quotation)</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">grnlnd_task.report_service_summary_quotation</field>
+            <field name="report_file">grnlnd_task.report_service_summary_quotation</field>
+            <field name="print_report_name">(object.name or 'Quotation') + ' - Service Summary Report'</field>
+        </record>
+
+        <record id="view_sale_order_summary_wizard_form" model="ir.ui.view">
+            <field name="name">sale.order.summary.wizard.form</field>
+            <field name="model">sale.order.summary.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Generate Service Summary Report">
+                    <group>
+                        <field name="order_id" invisible="1"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <footer>
+                        <button name="action_generate_report" string="Generate" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

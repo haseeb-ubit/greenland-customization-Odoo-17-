@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom search view for invoices with service-based search -->
+    <record id="view_account_move_search_services" model="ir.ui.view">
+        <field name="name">account.move.search.services</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <!-- Add service search field to the existing search -->
+            <field name="name" position="after">
+                <field name="service_names" string="Service" 
+                       filter_domain="[('service_names', 'ilike', self)]"
+                       placeholder="Search by service name..."/>
+            </field>
+        </field>
+    </record>
+    
+    <!-- Add grouping filters for journal entries -->
+    <record id="view_account_move_filter_inherit_greenland" model="ir.ui.view">
+        <field name="name">account.move.search.greenland.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_move_filter"/>
+        <field name="arch" type="xml">
+            <!-- Add filter for grouped entries -->
+            <xpath expr="//filter[@name='unposted']" position="after">
+                <separator/>
+                <filter string="Grouped Entries" name="grouped" domain="[('group_id', '!=', False), ('move_type', '=', 'entry')]"/>
+                <filter string="Ungrouped Entries" name="ungrouped" domain="[('group_id', '=', False), ('move_type', '=', 'entry')]"/>
+            </xpath>
+            
+            <!-- Add group by for entry group -->
+            <xpath expr="//filter[@name='journal']" position="after">
+                <filter string="Entry Group" name="group_by_group" context="{'group_by': 'group_id'}" domain="[('move_type', '=', 'entry')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

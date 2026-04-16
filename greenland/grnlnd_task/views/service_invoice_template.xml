@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="arabic_english_invoice" inherit_id="l10n_gcc_invoice.arabic_english_invoice">
+            <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+                <t t-set="docs" t-value="o"/>
+                <t t-call="web.basic_layout">
+                    <!-- Header -->
+                    <t t-call="grnlnd_task.custom_invoice_header_template"/>
+
+                        <!-- Page -->
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 12px; ">
+                        <style>
+                            .no-border {
+                                border: none !important;
+                            }
+                            .invoice-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 5px;
+                            }
+                            .invoice-table th, .invoice-table td {
+                            border: 1px solid #000;
+                            padding: 5px;
+                            text-align: center;
+                            font-size:12px;
+                            }
+                            .header-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 5px;
+                            }
+                            .header-table td {
+                            padding: 4px;
+                            vertical-align: top;
+                            }
+                            .arabic-text {
+                            font-family: 'Montserrat', sans-serif;
+                            direction: rtl;
+                            text-align: right;
+                            color: #666;
+                            font-size: 10px;
+                            }
+                            .totals-table {
+                            width: 50%;
+                            margin-left: auto;
+                            border-collapse: collapse;
+                            }
+                            .totals-table td {
+                            border: 1px solid #000;
+                            padding: 8px;
+                            }
+                            .blue-header {
+                            background-color: #f0f8ff;
+                            font-weight: bold;
+                            }
+                            .details-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 5px;
+                            }
+                            .details-table td {
+                            border: 1px solid #000;
+                            font-size: 12px;
+                            padding:2px;
+
+                            }
+                            .details-header {
+                            background-color: #D3D3D3;
+                            font-weight: bold;
+                            }
+                            .arabic-cell {
+                            text-align: right;
+                            direction: rtl;
+                            padding:4px;
+                            }
+                            .underline {
+                            text-decoration: underline;
+                            }
+
+                        </style>
+                        <!-- Header -->
+                        <div style="width: 100%; font-family: 'Montserrat'; width:100%">
+                            <!-- For Customer Invoice -->
+                            <t t-if="o.move_type == 'out_invoice'">
+                                <h1 style="color: red; font-size: 16px; font-weight: bold; text-align:center;">
+                                    T A X   I N V O I C E / <span style="direction: rtl;">فاتورة ضريبية</span>
+                                </h1>
+                            </t>
+                            <!-- For Customer Credit Note -->
+                            <t t-if="o.move_type == 'out_refund'">
+                                <h1 style="color: red; font-size: 16px; font-weight: bold; text-align:center;"><![CDATA[
+                                    C R E D I T &nbsp; N O T E / ]]><span style="direction: rtl;">إشعار دائن</span>
+                                </h1>
+                            </t>
+                            <p style="color: red; font-weight:bold; font-size: 12px; margin:0px;">
+                                Customer ID: <span t-esc="o.partner_id.ref or '-'"/>
+                                <span style="float: right; direction: rtl; font-family: 'Arial', sans-serif;">معرف العميل: <span t-esc="o.partner_id.ref or '-'"></span></span>
+                            </p>
+                            <!-- For Invoice -->
+                            <t t-if="o.move_type == 'out_invoice'">
+                                <p style="color: red; font-weight:bold; font-size: 12px; margin:0px;">
+                                    Invoice Number: <t t-if="o.state == 'posted'"><t t-esc="o.name != '/' and o.name or ''"/></t><span style="float: right; direction: rtl; font-family: 'Arial', sans-serif;">رقم الفاتورة: <span t-esc="o.invoice_number_arabic"></span></span>
+                                </p>
+                            </t>
+                            <!-- For Credit Note -->
+                            <t t-if="o.move_type == 'out_refund'">
+                                <p style="color: red; font-weight:bold; font-size: 12px; margin:0px;">
+                                    Credit Note Number:
+                                    <t t-if="o.state == 'posted'">
+                                        <t t-esc="o.name != '/' and o.name or ''"/>
+                                    </t>
+                                    <span style="float: right; direction: rtl; font-family: 'Arial', sans-serif;">
+                                        رقم الاشعار الدائن:
+                                        <span t-esc="o.invoice_number_arabic"/>
+                                    </span>
+                                </p>
+                            </t>
+                        </div>
+
+                        <!-- Our Details -->
+                        <table style='width: 100%;' class="details-table">
+                            <tr style='width: 100%;'>
+                                <td colspan="4" style="width:50;" class="details-header">Our Details</td>
+                                <td colspan="4" style="width:50;" class="details-header arabic-cell">تفاصيل شركتنا</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Name:</td>
+                                <td colspan="3"><span t-if="o.company_id.name" t-field="o.company_id.name">Dammam</span></td>
+                                <td colspan="3" class="arabic-cell"><span t-if="o.company_id.partner_id.name_ar" t-field="o.company_id.partner_id.name_ar">الاسم</span></td>
+                                <td class="details-header arabic-cell">الاسم:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Street:</td>
+                                <td colspan="3"><span t-if="o.company_id.partner_id.street" t-field="o.company_id.partner_id.street">street</span></td>
+                                <td colspan="3" class="arabic-cell"><span t-if="o.company_id.partner_id.street_ar" t-field="o.company_id.partner_id.street_ar">الاسم</span></td>
+                                <td class="details-header arabic-cell">اسم الشارع:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Building No:</td>
+                                <td><span t-if="o.company_id.partner_id.l10n_sa_edi_building_number" t-field="o.company_id.partner_id.l10n_sa_edi_building_number">street</span></td>
+                                <td class="details-header">City:</td>
+                                <td><span t-if="o.company_id.partner_id.city" t-field="o.company_id.partner_id.city">street</span></td>
+                                <td class="arabic-cell"><span t-if="o.company_id.partner_id.city_ar" t-field="o.company_id.partner_id.city_ar">street</span></td>
+                                <td class="details-header arabic-cell">المدينة:</td>
+                                <td class="arabic-cell"><span t-if="o.company_id.partner_id.l10n_sa_edi_building_number" t-field="o.company_id.partner_id.l10n_sa_edi_building_number">street</span></td>
+                                <td class="details-header arabic-cell">رقم المبنى:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Additional No:</td>
+                                <td><span t-if="o.company_id.partner_id.l10n_sa_edi_plot_identification" t-field="o.company_id.partner_id.l10n_sa_edi_plot_identification">2233</span></td>
+                                <td class="details-header">District:</td>
+                                <td>Bandariyah</td>
+                                <td class="arabic-cell">بندرية</td>
+                                <td class="details-header arabic-cell">الحي:</td>
+                                <td class="arabic-cell"><span t-if="o.company_id.partner_id.l10n_sa_edi_plot_identification" t-field="o.company_id.partner_id.l10n_sa_edi_plot_identification">2233</span></td>
+                                <td class="details-header arabic-cell">الرقم الإضافي:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Postal Code:</td>
+                                <td><span t-if="o.company_id.partner_id.zip" t-field="o.company_id.partner_id.zip">street</span></td>
+                                <td class="details-header">Country:</td>
+                                <td><span t-if="o.company_id.partner_id.country_id.name" t-field="o.company_id.partner_id.country_id.name">street</span></td>
+                                <td class="arabic-cell"><span t-if="o.company_id.partner_id.country_ar" t-field="o.company_id.partner_id.country_ar">street</span></td>
+                                <td class="details-header arabic-cell">البلد:</td>
+                                <td class="arabic-cell"><span t-if="o.company_id.partner_id.zip" t-field="o.company_id.partner_id.zip">street</span></td>
+                                <td class="details-header arabic-cell">الرمز البريدي:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">VAT Number:</td>
+                                <td><span t-if="o.company_id.partner_id.vat" t-field="o.company_id.partner_id.vat">2222221112</span></td>
+                                <td class="details-header">CR #:</td>
+                                <td><span t-field="o.company_id.partner_id.company_registry">2222221112</span></td>
+                                <td class="arabic-cell"><span t-field="o.company_id.partner_id.company_registry">2222221112</span></td>
+                                <td class="details-header arabic-cell">السجل:</td>
+                                <td class="arabic-cell"><span t-if="o.company_id.partner_id.vat" t-field="o.company_id.partner_id.vat">2222221112</span></td>
+                                <td class="details-header arabic-cell">الرقم الضريبي:</td>
+                            </tr>
+                        </table>
+
+                        <!-- Client Details -->
+                        <table style='width: 100%;' class="details-table">
+                            <tr style='width: 100%;'>
+                                <td colspan="4" style="width:50;" class="details-header">Client Details</td>
+                                <td colspan="4" style="width:50;" class="details-header arabic-cell">تفاصيل شركة العميل</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Name:</td>
+                                <td colspan="3"><span t-field="o.invoice_partner_display_name">Aflak Plastic Factory</span></td>
+                                <td colspan="3" class="arabic-cell"><span t-field="o.partner_id.name_ar">مصنع أفلاك للبلاستيك</span></td>
+                                <td class="details-header arabic-cell">الاسم:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Street:</td>
+                                <td colspan="3"><span t-if="o.partner_id.street" t-field="o.partner_id.street">Prince Turki Street</span></td>
+                                <td colspan="3" class="arabic-cell"><span t-if="o.partner_id.street_ar" t-field="o.partner_id.street_ar">شارع الأمير تركي</span></td>
+                                <td class="details-header arabic-cell">اسم الشارع:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Building No:</td>
+                                <td><span t-if="o.partner_id.l10n_sa_edi_building_number" t-field="o.partner_id.l10n_sa_edi_building_number">2233</span></td>
+                                <td class="details-header">City:</td>
+                                <td><span t-if="o.partner_id.city" t-field="o.partner_id.city">Dammam</span></td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.city_ar" t-field="o.partner_id.city_ar">دمام</span></td>
+                                <td class="details-header arabic-cell">المدينة:</td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.l10n_sa_edi_building_number" t-field="o.partner_id.l10n_sa_edi_building_number">2233</span></td>
+                                <td class="details-header arabic-cell">رقم المبنى:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Additional No:</td>
+                                <td><span t-if="o.partner_id.l10n_sa_edi_plot_identification" t-field="o.partner_id.l10n_sa_edi_plot_identification">2233</span></td>
+                                <td class="details-header">District:</td>
+                                <td><span t-if="o.partner_id.state_id.name" t-field="o.partner_id.state_id.name">Dammam</span></td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.state_ar" t-field="o.partner_id.state_ar">دمام</span></td>
+                                <td class="details-header arabic-cell">الحي:</td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.l10n_sa_edi_plot_identification" t-field="o.partner_id.l10n_sa_edi_plot_identification">2233</span></td>
+                                <td class="details-header arabic-cell">الرقم الإضافي:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">Postal Code:</td>
+                                <td><span t-if="o.partner_id.zip" t-field="o.partner_id.zip">-</span></td>
+                                <td class="details-header">Country:</td>
+                                <td><span t-if="o.partner_id.country_id.name" t-field="o.partner_id.country_id.name">Saudi Arabia</span></td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.country_ar" t-field="o.partner_id.country_ar">المملكة العربية السعودية</span></td>
+                                <td class="details-header arabic-cell">البلد:</td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.zip" t-field="o.partner_id.zip">75290</span></td>
+                                <td class="details-header arabic-cell">الرمز البريدي:</td>
+                            </tr>
+                            <tr>
+                                <td class="details-header">VAT Number:</td>
+                                <td><span t-field="o.partner_id.vat">00000</span></td>
+                                <td class="details-header">CR #:</td>
+                                <td><span t-if="o.partner_id.company_registry" t-field="o.partner_id.company_registry">75290</span></td>
+                                <td class="arabic-cell"><span t-if="o.partner_id.company_registry" t-field="o.partner_id.company_registry">75290</span></td>
+                                <td class="details-header arabic-cell">السجل:</td>
+                                <td class="arabic-cell"><span t-field="o.partner_id.vat">00000</span></td>
+                                <td class="details-header arabic-cell">الرقم الضريبي:</td>
+                            </tr>
+                        </table>
+
+                        <!-- Invoice Details -->
+                        <t t-if="o.move_type == 'out_invoice'">
+                            <table class="invoice-table">
+                                <tr class="details-header">
+                                    <th>Invoice Date</th>
+                                    <th>Contract / PO Number</th>
+                                    <th>Invoice Period</th>
+                                    <th>Payment Terms</th>
+                                    <th>Due Date</th>
+                                </tr>
+                                <tr>
+                                    <td><span t-field="o.invoice_date">2023-09-12</span></td>
+                                    <td><span t-field="o.customer_po">-</span></td>
+                                    <td><span t-field="o.start_date"/> <span t-if="o.start_date and o.end_date" t-out="' to '"/><span t-if="not o.start_date and not o.end_date" t-out="'-'"/><span t-field="o.end_date"/></td>
+                                    <td><span t-field="o.invoice_payment_term_id.name" >-</span></td>
+                                    <td><span t-field="o.invoice_date_due">2023-09-12</span></td>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <!-- For Customer Credit Notes -->
+                        <t t-if="o.move_type == 'out_refund'">
+                            <table class="invoice-table">
+                                <tr class="details-header">
+                                    <th>Credit Note Date</th>
+                                    <th>Contract / PO Number</th>
+                                    <th>Invoice Date</th>
+                                    <th>Relevant Invoice Number</th>
+                                </tr>
+                                <tr>
+                                    <td><span t-field="o.invoice_date"/></td>
+                                    <td><span t-field="o.customer_po"/></td>
+                                    <td><span t-field="o.reversed_entry_id.invoice_date"/></td>
+                                    <td><span t-field="o.reversed_entry_id.name"/></td>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <!-- Items Table -->
+                        <table class="invoice-table">
+                            <thead>
+                                <tr class="details-header">
+                                    <th style="font-size:10px; line-height:1.5;" >الرمز الوحدة <br/>Service Code (SKU)</th>
+                                    <th style="font-size:10px; line-height:1.5;" width="30%">تفـاصيل السلع أو الخدمـات<br/>Nature of Goods or Services</th>
+                                    <th style="font-size:10px; line-height:1.5;">وحدة<br/>Unit</th>
+                                    <th style="font-size:10px; line-height:1.5;">الكمية<br/>Qty</th>
+                                    <th style="font-size:10px; line-height:1.5;">سعر الوحدة<br/>Unit Rate</th>
+                                    <th style="font-size:10px; line-height:1.5;" width="15%">السعر الإجمالى غير شامل ضريبة القيمة المضافة<br/>Total Price excl. VAT</th>
+                                    <th style="font-size:10px; line-height:1.5;">ضريبة القيمة المضافة<br/>VAT %</th>
+                                    <th style="font-size:10px; line-height:1.5;">ضريبة القيمة المضافة<br/>VAT Amount</th>
+                                    <th style="font-size:10px; line-height:1.5;">السعر الإجمالى<br/>Total With VAT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 <t t-set="current_subtotal" t-value="0"/>
+                                <t t-set="current_total" t-value="0"/>
+                                <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+
+                                <t t-foreach="lines" t-as="line" t-enumerate="true">
+                                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                                    <t t-set="current_total" t-value="current_total + line.price_total"/>
+                                    <tr>
+                                        <td style="font-size:10px; line-height:1.5;"><span t-field="line.product_id.default_code">-</span></td>
+                                        <td style="font-size:10px; line-height:1.5;">
+                                            <span t-if="line.line_description"  t-out="line.line_description" t-options="{'widget': 'text'}">-</span>
+                                            <span t-if="line.location.name"  t-out="'- '+ line.location.name" t-options="{'widget': 'text'}">-</span><br/>
+                                            <span t-if="o.show_product_name_ar and line.product_id" t-field="line.product_id.product_tmpl_id.name_ar">-</span>
+                                        </td>
+                                        <td style="font-size:10px; line-height:1.5;"><span t-field="line.product_uom_id.name">-</span></td>
+                                        <td style="text-align:center; font-size:10px; line-height:1.5;"><span t-field="line.quantity">0.00</span></td>
+                                        <td style="text-align:center; font-size:10px; line-height:1.5;"><span t-field="line.price_unit">0.00</span></td>
+                                        <td style="text-align:center; font-size:10px; line-height:1.5;"><span t-out="'{:,.2f}'.format(line.price_subtotal)">0.00</span></td>
+                                        <td style="text-align:center; font-size:10px; line-height:1.5;"><span t-field="line.tax_ids">0.00</span></td>
+                                        <td style="text-align:center; font-size:10px; line-height:1.5;"><span t-esc="'{:,.2f}'.format(line.price_subtotal*(line.tax_ids.amount/100))">0.00</span></td>
+                                        <td style="text-align:center; font-size:10px; line-height:1.5;"><span t-out="'{:,.2f}'.format(line.price_subtotal+line.price_subtotal*(line.tax_ids.amount/100))">0.00</span></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="9">
+                                        <div style="text-align: center; margin: 0; font-size:10px; line-height:1.5;">
+                                            <p style="margin: 0px 0;">* Nothing To Follow *</p>
+                                            <p style="margin: 0px 0;">* لا شيء يتبع *</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Summary Table -->
+                        <div  class="row mb-4" style="display: flex;flex-direction: row; justify-content: space-between; width: 100%;">
+                            <!-- Table on the Left covering 80% width -->
+                            <table style="width: 100%; padding:0%;" class="invoice-table">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 1px; text-align: left; font-weight: bold;">Total Excluding VAT (SAR):</td>
+                                        <td style="padding: 0px; text-align: center; font-weight: bold;">
+                                            <span t-out="'{:,.2f}'.format(o.amount_untaxed)">31.05</span>
+                                        </td>
+                                        <td style="padding: 2px; text-align: right; direction: rtl; font-size: 10;">
+                                            الإجمالى غير شامل ضريبة القيمة المضافة (ر.س.)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 1px; text-align: left; font-weight: bold;">VAT Amount (SAR):</td>
+                                        <td style="padding: 0px; text-align: center; font-weight: bold;">
+                                            <span t-out="'{:,.2f}'.format(o.amount_tax)">31.05</span>
+                                        </td>
+                                        <td style="padding: 2px; text-align: right; direction: rtl; font-size: 10;">ضريبة القيمة المضافة (ر.س.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 1px; text-align: left; font-weight: bold;">Amount Including VAT (SAR):</td>
+                                        <td style="padding: 0px; text-align: center;" class="underline details-header">
+                                            <span t-out="'{:,.2f}'.format(o.amount_total)">31.05</span>
+                                        </td>
+                                        <td style="padding: 2px; text-align: right; direction: rtl; font-size: 10;">
+                                            المبلغ شامل ضريبة القيمة المضافة (ر.س.)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="padding: 1px; text-align: left; font-weight: bold;">Amount In Words:</td>
+                                        <td style="padding: 0px; text-align: center; font-weight: bold;">
+                                            <span t-esc="o.amount_in_words()">Thirteen Thousand Forty Six Riyals and Seventy Five Halalas</span>
+                                        </td>
+                                        <td rowspan="2" style="padding: 2px; text-align: right; direction: rtl; font-size: 10;">المبلغ مكتوب</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 2px; text-align: center; font-size: 10;">
+                                            <span t-esc="o.amount_in_words_ar()">ألفان ومائة وخمسة وثمانون فقط</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="padding: -1px; text-align: center; font-weight: bold; font-style: italic;">
+                                            Amount Considered Confirmed And Final After 7 Days Of Invoice Receipt.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+
+                        <!-- Bank Details -->
+                       <t t-if="o.move_type == 'out_invoice'">
+                           <table class="invoice-table" style="page-break-inside: avoid; margin-top:-2.35%; font-size:10px;">
+                            <tr class="details-header">
+                                <th colspan="5" style="text-align: left; white-space: nowrap; position: relative; width: 100%;">
+                                    <span style="padding-left:2px; left: 0; font-weight: bold; white-space: nowrap;">Payment Details</span>
+                                    <span style="padding-right:4px; margin-top:-1px; position: absolute; right: 0; font-weight: bold; direction: rtl; white-space: nowrap;" class="arabic-cell">التفاصيل المصرفية</span>
+                                </th>
+                                <th colspan="2" style="text-align: center;">Prepared By</th>
+                                <th colspan="2" style="text-align: center;">Received By</th>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" style="text-align:left; width:20%;">Bank:</td>
+                                <td colspan="2" style="text-align:center; width:30%;"><span t-field="o.partner_bank_id.bank_id.name">-</span></td>
+                                <td colspan="1" class="arabic-cell" style="font-weight:bold; text-align:right; width:12%;">بنك</td>
+                                <td colspan="2" rowspan="4" style="width:20%; vertical-align:middle; text-align:center;">
+                                    <img src="/grnlnd_task/static/src/img/stamp.png" style="max-width: 145px; max-height: 130px; width:auto; height:auto; display:block; margin:auto;" alt="Stamp"/>
+                                </td>
+                                <td colspan="2" rowspan="4" style="width:20%;"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:left; width:20%;">Beneficiary Name:</td>
+                                <td colspan="2" style="text-align:center; width:30%;"><span t-field="o.partner_bank_id.acc_holder_name">-</span></td>
+                                <td class="arabic-cell" style="font-weight:bold; text-align:right; width:12%;">اسم المستفيد</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:left; width:20%;">Account Number:</td>
+                                <td colspan="2" style="text-align:center; width:30%;"><span t-field="o.partner_bank_id.acc_number">-</span></td>
+                                <td class="arabic-cell" style="font-weight:bold; text-align:right; width:12%;">الحساب</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:left; width:20%;">IBAN:</td>
+                                <td colspan="2" style="text-align:center; width:30%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span t-field="o.partner_bank_id.iban">-</span></td>
+                                <td class="arabic-cell" style="font-weight:bold; text-align:right; width:12%;">آيبان</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:left; width:20%;">Branch:</td>
+                                <td colspan="2" style="text-align:center; width:30%;"><span t-field="o.partner_bank_id.branch">-</span></td>
+                                <td class="arabic-cell" style="font-weight:bold; text-align:right; width:12%;">الفرع</td>
+                                <td colspan="2" style="font-size:10px; text-align:center;">التوقيع مع الختم<br/>Signature with stamp</td>
+                                <td colspan="2" style="font-size:10px; text-align:center;">التوقيع / التاريخ / الختم<br/>Signature / Date / Stamp</td>
+                            </tr>
+                        </table>
+                       </t>
+                    </div>
+                    <t t-set="qr_code_data" t-value="o._generate_zatca_qr_code()"/>
+                    <!-- footer -->
+                    <div class="footer" style="width: 100%; font-family: 'Montserrat';  width:100%; display: flex;justify-content:space-between;  ">
+                        <!-- QR Code Section -->
+                            <div>
+                                <img t-att-src="'/grnlnd_task/static/src/img/left_footer.png'" style="width:230px; max-height: 250px;" />
+                                <t t-if="qr_code_data">
+                                    <img t-att-src="qr_code_data" style=" height: 100px; padding-right:134px; padding-left:134px;"/>
+                                </t>
+                                <img t-att-src="'/grnlnd_task/static/src/img/right_footer.png'" style="width:230px; max-height: 250px;" />
+                            </div>
+                        <div class="text-center">
+                            Page <span class="page"/> of <span class="topage"/>
+                        </div>
+                    </div>
+<!--                        <t style=' margin-bottom:20px;' t-call="grnlnd_task.custom_invoice_footer_template"/>-->
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

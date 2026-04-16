@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Location Form View -->
+    <record id="location_form_view" model="ir.ui.view">
+        <field name="name">location.form</field>
+        <field name="model">sale.order.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Menu Action -->
+    <record id="action_location" model="ir.actions.act_window">
+        <field name="name">Location</field>
+        <field name="res_model">sale.order.location</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_location"
+              name="Location"
+              parent="sale.menu_sale_config"
+              action="action_location"
+              sequence="30"/>
+</odoo>

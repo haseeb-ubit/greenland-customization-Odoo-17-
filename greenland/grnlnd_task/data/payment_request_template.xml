@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <record id="email_template_payment_request" model="mail.template">
+            <field name="name">Payment Request for Services Rendered</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="email_from">{{ (user.email_formatted or 'your_email@example.com') }}</field>
+            <field name="partner_to">{{ object.id }}</field>
+            <field name="lang">{{ object.lang }}</field>
+            <field name="subject">Payment Request for Services Rendered</field>
+            <field name="body_html" type="html">
+                <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear <t t-out="object.name" />,
+                        <br/><br/>
+                    <p>I hope this message finds you well. We are writing to follow up on payment for services rendered. Attached, you will find your statement of account, which details the outstanding balance.</p>
+                    <p>We kindly ask that payment be arranged at your earliest convenience to close the balance.</p>
+                    <p>Best regards,<br/>
+                    <br/>
+                        <t t-if="not is_html_empty(user.signature)">
+                            <t t-out="user.signature"/>
+                        </t></p></p>
+
+                </div></field>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+    </data>
+</odoo>

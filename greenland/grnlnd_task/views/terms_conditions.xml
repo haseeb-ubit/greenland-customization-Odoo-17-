@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="terms_and_conditions_tree_view" model="ir.ui.view">
+        <field name="name">terms.and.conditions.tree</field>
+        <field name="model">terms_and_conditions</field>
+        <field name="arch" type="xml">
+            <tree string="Terms and Conditions">
+                <field name="category" string="Category"/>
+                <field name="name"/>
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="terms_and_conditions_selection_tree" model="ir.ui.view">
+        <field name="name">terms.and.conditions.selection.tree</field>
+        <field name="model">terms_and_conditions</field>
+        <field name="arch" type="xml">
+            <tree string="Terms and Conditions">
+                <field name="category" />
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="terms_and_conditions_form_view" model="ir.ui.view">
+        <field name="name">terms.and.conditions.form</field>
+        <field name="model">terms_and_conditions</field>
+        <field name="arch" type="xml">
+            <form string="Terms and Conditions">
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="category" required="1"/>
+                        <field name="note" required="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="terms_and_conditions_action" model="ir.actions.act_window">
+        <field name="name">Terms and Conditions</field>
+        <field name="res_model">terms_and_conditions</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help">Create and manage your terms and conditions</field>
+    </record>
+
+    <menuitem
+        id="menu_terms_and_conditions"
+        name="Terms and Conditions"
+        parent="sale.menu_sale_config"
+        action="terms_and_conditions_action"
+        sequence="20"/>
+
+    <!-- Category Form View -->
+    <record id="terms_category_form_view" model="ir.ui.view">
+        <field name="name">terms.category.form</field>
+        <field name="model">terms.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menu Action -->
+    <record id="action_terms_category" model="ir.actions.act_window">
+        <field name="name">Terms Categories</field>
+        <field name="res_model">terms.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_terms_category"
+              name="Terms Categories"
+              parent="sale.menu_sale_config"
+              action="action_terms_category"
+              sequence="19"/>
+
+</odoo>

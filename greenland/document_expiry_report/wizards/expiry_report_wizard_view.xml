@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_document_expiry_report_wizard" model="ir.ui.view">
+        <field name="name">document.expiry.report.wizard.form</field>
+        <field name="model">document.expiry.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Document Expiry Report">
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="Generate" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_document_expiry_report_wizard" model="ir.actions.act_window">
+        <field name="name">Document Expiry Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">document.expiry.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo> 

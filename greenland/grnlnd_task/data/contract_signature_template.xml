@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+        <record id="email_template_contract_signature" model="mail.template">
+            <field name="name">Contract Signature - Action Required</field>
+            <field name="model_id" ref="grnlnd_task.model_subscription_contracts"/>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="subject">Contract Signature - Action Required</field>
+            <field name="body_html" type="html">
+                <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear <t t-out="object.partner_id.name" />,
+                        <br/><br/>
+                    <p>We are pleased to inform you that your contract has been prepared and is ready for your review and signature. Please find the attached document for your reference. If you prefer a physical copy, we can provide one for your signature. </p>
+                    <p>Please sign the contract and return it to us at your earliest convenience. If you have any questions or need further assistance, please don’t hesitate to reach out.</p>
+                    <p>Thank you for your prompt attention to this matter.Thank you for your prompt attention to this matter.</p>
+                    <p>Best regards,<br/>
+                    <br/>
+                        <t t-if="not is_html_empty(user.signature)">
+                            <t t-out="user.signature or ''"/>
+                        </t></p></p>
+
+                </div>
+                </field>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+
+    </data>
+</odoo>

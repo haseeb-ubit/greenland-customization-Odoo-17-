@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="expense_report_common_styles">
+        <style>
+            /* Expense Table - Matches Client Template */
+            .expense_table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+                margin-bottom: 20px;
+                font-size: 14px;
+            }
+            .expense_table th {
+                background-color: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                border: 1px solid #000;
+                padding: 6px 4px;
+                font-weight: bold;
+                text-align: center;
+                font-size: 14px;
+            }
+            .expense_table td {
+                border: 1px solid #000;
+                padding: 4px 3px;
+                font-size: 14px;
+                vertical-align: middle;
+            }
+            
+            /* Column Widths - Adjusted for 11 columns (Landscape) */
+            .expense_table th:nth-child(1), .expense_table td:nth-child(1) { width: 3%; text-align: center; } /* Serial */
+            .expense_table th:nth-child(2), .expense_table td:nth-child(2) { width: 8%; text-align: center; } /* Date */
+            .expense_table th:nth-child(3), .expense_table td:nth-child(3) { width: 9%; text-align: center; } /* Invoice # */
+            .expense_table th:nth-child(4), .expense_table td:nth-child(4) { width: 10%; text-align: center; } /* Vendor Name */
+            .expense_table th:nth-child(5), .expense_table td:nth-child(5) { width: 10%; text-align: center; } /* Vendor VAT */
+            .expense_table th:nth-child(6), .expense_table td:nth-child(6) { width: 10%; text-align: center; } /* Category */
+            .expense_table th:nth-child(7), .expense_table td:nth-child(7) { width: 18%; text-align: center; } /* Description */
+            .expense_table th:nth-child(8), .expense_table td:nth-child(8) { width: 8%; } /* Unit Price */
+            .expense_table th:nth-child(8) { text-align: center; }
+            .expense_table td:nth-child(8) { text-align: right; }
+            .expense_table th:nth-child(9), .expense_table td:nth-child(9) { width: 8%; text-align: center; } /* Taxable */
+            .expense_table th:nth-child(10), .expense_table td:nth-child(10) { width: 7%; } /* VAT Amount */
+            .expense_table th:nth-child(10) { text-align: center; }
+            .expense_table td:nth-child(10) { text-align: right; }
+            .expense_table th:nth-child(11), .expense_table td:nth-child(11) { width: 8%; } /* Total */
+            .expense_table th:nth-child(11) { text-align: center; }
+            .expense_table td:nth-child(11) { text-align: right; }
+            
+            /* Alternating row colors for better readability */
+            .expense_table tbody tr:nth-child(even) {
+                background-color: #fafafa;
+            }
+            
+            /* Signature and Totals Section */
+            .signature_totals_section {
+                display: table;
+                width: 100%;
+                margin-top: 30px;
+            }
+            .signature_column {
+                display: table-cell;
+                width: 50%;
+                vertical-align: top;
+                padding-right: 20px;
+            }
+            .totals_column {
+                display: table-cell;
+                width: 50%;
+                text-align: right;
+                vertical-align: top;
+            }
+            .totals_row {
+                margin-bottom: 5px;
+                font-size: 14px;
+            }
+            .totals_row.total_final {
+                font-size: 14px;
+                font-weight: bold;
+                margin-top: 5px;
+            }
+        </style>
+    </template>
+
+    <template id="expense_report_table">
+         <div style="font-size: 15px; margin-top: -40px;" >
+            <div style="font-size: 15px;">
+                <h5 style="margin-bottom: 5px; font-weight: bold;">Petty Cash Expense Report</h5>
+                <strong>Report #:</strong> <span t-if="o.report_reference" t-field="o.report_reference"/> <br/>
+
+                <t t-set="expense_dates_header" t-value="o.expense_line_ids.mapped('date')"/>
+                <t t-set="start_date_header" t-value="min(expense_dates_header) if expense_dates_header else False"/>
+                <t t-set="end_date_header" t-value="max(expense_dates_header) if expense_dates_header else False"/>
+
+                <strong>Start Date:</strong>
+                <span t-if="start_date_header" t-esc="start_date_header.strftime('%d/%m/%Y')"/>
+                <span t-else="">N/A</span>
+                <br/>
+
+                <strong>End Date:</strong>
+                <span t-if="end_date_header" t-esc="end_date_header.strftime('%d/%m/%Y')"/>
+                <span t-else="">N/A</span>
+                <br/>
+
+                <strong>Submitted By:</strong> <span t-field="o.employee_id.name"/>
+            </div>
+        </div>
+        <table class="expense_table">
+            <thead style="color:#326637;">
+                <tr>
+                    <th style="width: 3%;">Serial</th>
+                    <th style="width: 8%;">Date</th>
+                    <th style="width: 9%;">Invoice #</th>
+                    <th style="width: 10%;">Vendor Name</th>
+                    <th style="width: 10%;">Vendor VAT Number</th>
+                    <th style="width: 10%;">Category</th>
+                    <th style="width: 18%;">Description</th>
+                    <th style="width: 8%;">Unit Price</th>
+                    <th style="width: 8%;">Taxable Item</th>
+                    <th style="width: 7%;">VAT Amount</th>
+                    <th style="width: 8%;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-set="serial" t-value="0"/>
+                <tr t-foreach="o.expense_line_ids" t-as="line">
+                    <t t-set="serial" t-value="serial + 1"/>
+
+                    <td class="text-center">
+                        <span t-esc="serial"/>
+                    </td>
+
+                    <td class="text-left">
+                        <span t-if="line.date" t-esc="line.date.strftime('%d/%m/%Y')"/>
+                    </td>
+
+                    <td class="text-left">
+                        <span t-field="line.reference"/>
+                    </td>
+
+                    <td class="text-left">
+                        <span t-if="line.vendor_id" t-field="line.vendor_id.name"/>
+                        <span t-else="">-</span>
+                    </td>
+
+                    <td class="text-left">
+                        <span t-if="line.vendor_id" t-field="line.vendor_id.vat"/>
+                        <span t-else="">-</span>
+                    </td>
+
+                    <td class="text-left">
+                        <span t-field="line.product_id.name"/>
+                    </td>
+
+                    <td class="text-left">
+                        <span t-field="line.name"/>
+                    </td>
+
+                    <td class="text-right">
+                        <span t-field="line.price_unit"
+                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                    </td>
+
+                    <td class="text-center">
+                        <t t-if="line.tax_ids">
+                            <span t-esc="', '.join(line.tax_ids.mapped('name'))"/>
+                        </t>
+                    </td>
+
+                    <td class="text-right">
+                        <span t-field="line.tax_amount_currency"
+                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                    </td>
+
+                    <td class="text-right">
+                        <span t-field="line.total_amount_currency"
+                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
+    <template id="report_petty_cash_expense_sheet_content">
+        <div class="page">
+            <t t-call="dp_portal_expense.expense_report_common_styles"/>
+
+            <t t-call="dp_portal_expense.expense_report_table"/>
+
+            <t t-call="dp_portal_expense.expense_totals_section"/>
+
+            <div style="height: 30px;"></div>
+
+        </div>
+    </template>
+
+    <template id="expense_totals_section">
+        <div class="signature_totals_section">
+            <div class="signature_column">
+                <div style="margin-top: 40px; white-space: nowrap;">
+                    <strong>Submitter Signature:</strong> _______________________________________
+                </div>
+            </div>
+            <div class="totals_column">
+                <div class="totals_row">
+                    <strong>Untaxed Amount:</strong>
+                    <span t-field="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' style="margin-left: 20px;"/>
+                </div>
+                <div class="totals_row">
+                    <strong>Taxes:</strong>
+                    <span t-field="o.total_tax_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' style="margin-left: 20px;"/>
+                </div>
+                <div class="totals_row total_final">
+                    <strong>Total:</strong>
+                    <span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' style="margin-left: 20px;"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+    <!-- Wrapper template for Summary report - fixes wkhtmltopdf cache issue -->
+    <template id="report_petty_cash_expense_sheet_summary">
+        <t t-call="dp_portal_expense.report_petty_cash_expense_sheet"/>
+    </template>
+
+    <template id="report_petty_cash_expense_sheet">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o.company_id"/>
+                
+                <t t-call="web.external_layout_standard">
+                    <t t-call="dp_portal_expense.report_petty_cash_expense_sheet_content"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_petty_cash_attachment_img">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="oe_structure"></div>
+                    <div t-if="attachment and attachment.mimetype != 'application/pdf'">
+                        <h3><span t-out="attachment.res_name">Attachment Name</span></h3>
+                        <img t-att-src="attachment.image_src" class="o_attachment_pdf"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

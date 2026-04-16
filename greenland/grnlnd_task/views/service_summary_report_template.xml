@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="report_service_summary">
+            <t t-call="web.basic_layout">
+                <t t-call="grnlnd_task.custom_header_template"/>
+
+                <div style='margin-top:60px; margin-left:2px;' class="page">
+                    <h3>Service Summary Report</h3>
+                    <p>
+                        <strong>From: </strong>
+                        <t t-if="doc.start_date" t-esc="doc.start_date.strftime('%d/%b/%Y')"/>
+                        <t t-else="">N/A</t>
+                        <br/>
+                        <strong>To: </strong>
+                        <t t-if="doc.end_date" t-esc="doc.end_date.strftime('%d/%b/%Y')"/>
+                        <t t-else="">N/A</t>
+                        <br/>
+                        <strong>Client:</strong>
+                        <t t-esc="doc.partner_id.name"/>
+                    </p>
+                    <div style="margin-top:50px;">
+                        <t t-set="col_index" t-value="-1"/>
+                        <t t-foreach="services" t-as="service">
+                            <t t-set="col_index" t-value="col_index + 1"/>
+                        <h4>Service:
+<!--                            <t t-esc="service['service_name'] + ' - ' +service['entries'][0]['location']"/>-->
+                            <t t-esc="service['service_name']"/>
+                        </h4>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Service Ticket</th>
+                                    <th>Location</th>
+                                    <th>Driver</th>
+                                    <th>Vehicle</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="row_index" t-value="0"/>
+                                <t t-foreach="service['entries']" t-as="entry">
+                                    <tr>
+                                        <t t-set="row_index" t-value="row_index + 1"/>
+                                        <td>
+                                            <t t-esc="entry['service_ticket_date']"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <t t-esc="entry['service_ticket_number']"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <t t-esc="entry['location']"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <t t-esc="entry['driver_name']"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <t t-esc="entry['vehicle_number']"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <t t-esc="'%.2f' % entry['service_qty']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align: right;"><strong>Total Quantity: </strong></td>
+                                    <td style="text-align: center;"><strong><t t-esc="'%.2f' % service['total_qty']"/></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    </div>
+
+                </div>
+
+                <!-- Add Signature Line Before Footer -->
+                <br/><br/>
+                <div style="width: 100%; text-align: left; margin-top: 10px; font-family: 'Montserrat'; font-size: 16px; font-weight: 500;">
+                    Client Signature: __________________________
+                </div> 
+
+                <t t-call="grnlnd_task.custom_footer_template1"/>
+            </t>
+        </template>
+
+
+        <template id="report_service_summary_contract">
+            <t t-call="web.basic_layout">
+                <t t-call="grnlnd_task.custom_header_template"/>
+
+                <div style='margin-top:60px; margin-left:2px;' class="page">
+                    <h3>Service Summary Report</h3>
+                    <p>
+                        <strong>From: </strong> <t t-esc="start_date"/>
+                        <br/>
+                        <strong>To: </strong> <t t-esc="end_date"/>
+                        <br/>
+                        <strong>Client: </strong>
+                        <t t-esc="doc.partner_id.name"/>
+                    </p>
+                    <div style="margin-top:50px;">
+                        <t t-set="col_index" t-value="-1"/>
+                        <t t-foreach="services" t-as="service">
+                            <t t-set="col_index" t-value="col_index + 1"/>
+                            <h4>Service: <t t-esc="service['service_name']"/></h4>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Service Ticket</th>
+                                        <th>Location</th>
+                                        <th>Driver</th>
+                                        <th>Vehicle</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="row_index" t-value="0"/>
+                                    <t t-foreach="service['entries']" t-as="entry">
+                                        <tr>
+                                            <t t-set="row_index" t-value="row_index + 1"/>
+                                            <td><t t-esc="entry['service_ticket_date']"/></td>
+                                            <td style="text-align: center;"><t t-esc="entry['service_ticket_number']"/></td>
+                                            <td style="text-align: center;"><t t-esc="entry['location']"/></td>
+                                            <td style="text-align: center;"><t t-esc="entry['driver_name']"/></td>
+                                            <td style="text-align: center;"><t t-esc="entry['vehicle_number']"/></td>
+                                            <td style="text-align: center;"><t t-esc="'%.2f' % entry['service_qty']"/></td>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td style="text-align: right;"><strong>Total Quantity: </strong></td>
+                                        <td style="text-align: center;"><strong><t t-esc="'%.2f' % service['total_qty']"/></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                    
+                    <!-- 2. Add page numbering directly in main template -->
+                    <div class="text-center" style="position: fixed; bottom: 20px; width: 100%;">
+                        <span>Page <span class="page"/></span> / <span class="topage"/>
+                    </div>
+                </div>
+                <!-- Add Signature Line Before Footer -->
+                <br/><br/>
+                <div style="width: 100%; text-align: left; margin-top: 10px; font-family: 'Montserrat'; font-size: 16px; font-weight: 500;">
+                    Client Signature: __________________________
+                </div>  
+                
+                <t t-call="grnlnd_task.custom_footer_template1"/>
+            </t>
+        </template>
+        
+
+        <!-- 3. Make sure the report is properly registered -->
+        <record id="action_report_service_summary" model="ir.actions.report">
+            <field name="name">Service Summary Report</field>
+            <field name="model">subscription.contracts</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">grnlnd_task.report_service_summary_contract</field>
+            <field name="report_file">grnlnd_task.report_service_summary_contract</field>
+            <field name="binding_model_id" ref="model_subscription_contracts"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

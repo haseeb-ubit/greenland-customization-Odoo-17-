@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_petty_cash_with_invoices" inherit_id="hr_expense.report_expense_sheet" primary="True">
+        
+        <!-- Replace the standard report content with the custom content AND attachments inside the same layouts -->
+        <xpath expr="//div[@class='page o_content_pdf']" position="replace">
+            <!-- 1. Custom Main Table Content -->
+            <t t-call="dp_portal_expense.report_petty_cash_expense_sheet_content"/>
+
+            <!-- 2. Attachment Pages (Inside the same layout for Headers/Footers) -->
+            <t t-set="serial" t-value="0"/>
+            <t t-foreach="o.expense_line_ids" t-as="line">
+                <t t-set="serial" t-value="serial + 1"/>
+                
+                <!-- Only generate page if attachment exists AND is not a PDF (PDFs are merged at the end) -->
+                <t t-if="line.message_main_attachment_id and line.message_main_attachment_id.datas and line.message_main_attachment_id.mimetype != 'application/pdf'">
+                    <div class="page text-center" style="page-break-before: always;">
+                        <h3 class="mb-4">
+                            <span t-esc="str(serial).zfill(2)"/> – <span t-field="line.name"/>
+                        </h3>
+                        <!-- Image sized to fit Landscape Page with Header/Footer (approx 140mm safe height) -->
+                        <img t-att-src="line.get_printable_image()"
+                             class="o_attachment_pdf"
+                             style="max-height: 140mm; max-width: 100%;"
+                             alt="Scanned Invoice"/>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

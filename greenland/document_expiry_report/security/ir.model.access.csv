@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_document_expiry_report_wizard,access_document_expiry_report_wizard,model_document_expiry_report_wizard,base.group_user,1,1,1,1
+access_customer_documents,access_customer_documents,grnlnd_task.model_customer_documents,base.group_user,1,0,0,0
+access_document_expiry_cron_manager,access.document.expiry.cron.manager,model_document_expiry_cron,base.group_system,1,1,1,1

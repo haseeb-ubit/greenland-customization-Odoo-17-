@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="action_report_invoice_and_summary" model="ir.actions.report">
+            <field name="name">Invoice and Summary Report</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">grnlnd_task.report_invoice_and_summary</field>
+            <field name="report_file">grnlnd_task.report_invoice_and_summary</field>
+            <field name="print_report_name">'%s - %s' % (object.partner_id.ref or object.partner_id.name, (object.name or '').replace('/', '∕'))</field>
+            <field name="binding_model_id" eval="False"/>
+        </record>
+
+        <template id="report_invoice_and_summary">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <!-- Invoice Report -->
+                    <t t-call="l10n_gcc_invoice.arabic_english_invoice" t-lang="o.partner_id.lang"/>
+                    
+                    <!-- Service Summary Report -->
+                    <t t-set="doc" t-value="o"/>
+                    <t t-set="services" t-value="o.get_service_ticket_summary_data()"/>
+                    <t t-call="grnlnd_task.report_service_summary"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
